@@ -25,7 +25,10 @@ class DiscryptorApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: <BlocProvider<dynamic>>[
-        BlocProvider<LoginCubit>(lazy: false, create: (context) => LoginCubit())
+        BlocProvider<LoginCubit>(
+            lazy: false, create: (context) => LoginCubit()),
+        BlocProvider<SelectedChatCubit>(
+            lazy: false, create: ((context) => SelectedChatCubit()))
       ],
       child: MaterialApp(
         title: 'Discryptor',
@@ -33,8 +36,19 @@ class DiscryptorApp extends StatelessWidget {
         theme: ThemeData(
           visualDensity: VisualDensity.adaptivePlatformDensity,
           brightness: Brightness.dark,
-          primaryColor: Colors.blue,
-          primarySwatch: Colors.blue,
+          primaryColor: const Color(0xFF5865f2),
+          primarySwatch: const MaterialColor(0xFF5865f2, {
+            50: Color(0x4F5865f2),
+            100: Color(0x6F5865f2),
+            200: Color(0x8F5865f2),
+            300: Color(0xAF5865f2),
+            400: Color(0xCF5865f2),
+            500: Color(0xFF5865f2),
+            600: Color(0xFF5865f2),
+            700: Color(0xFF5865f2),
+            800: Color(0xFF5865f2),
+            900: Color(0xFF5865f2),
+          }),
         ),
         themeMode: ThemeMode.dark,
         navigatorKey: navigatorKey,

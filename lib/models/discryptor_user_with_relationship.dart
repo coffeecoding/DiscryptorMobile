@@ -1,7 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-class DiscryptorUser {
+class DiscryptorUserWithRelationship {
   final int id;
   final int createdAt;
   final int guildId;
@@ -9,17 +9,17 @@ class DiscryptorUser {
   final String username;
   final int? accentColor;
   final String discriminator;
-  final String avatarUrl;
+  final String? avatarUrl;
   final String defaultAvatarUrl;
-  final String bannerUrl;
+  final String? bannerUrl;
   final String publicKey;
   final bool isBot;
   final bool isWebhook;
-
-  String get usedAvatarUrl => avatarUrl.isEmpty ? defaultAvatarUrl : avatarUrl;
-  String get fullname => '$username#$discriminator';
-
-  DiscryptorUser({
+  final bool isInitiatorOfRelationship;
+  final int? relationshipAcceptanceDate;
+  final int? relationshipInitiationDate;
+  final String? encryptedSymmKey;
+  DiscryptorUserWithRelationship({
     required this.id,
     required this.createdAt,
     required this.guildId,
@@ -27,15 +27,23 @@ class DiscryptorUser {
     required this.username,
     this.accentColor,
     required this.discriminator,
-    required this.avatarUrl,
+    this.avatarUrl,
     required this.defaultAvatarUrl,
-    required this.bannerUrl,
+    this.bannerUrl,
     required this.publicKey,
     required this.isBot,
     required this.isWebhook,
+    required this.isInitiatorOfRelationship,
+    this.relationshipAcceptanceDate,
+    this.relationshipInitiationDate,
+    this.encryptedSymmKey,
   });
 
-  DiscryptorUser copyWith({
+  String get usedAvatarUrl =>
+      avatarUrl == null || avatarUrl == '' ? defaultAvatarUrl : avatarUrl!;
+  String get fullname => '$username#$discriminator';
+
+  DiscryptorUserWithRelationship copyWith({
     int? id,
     int? createdAt,
     int? guildId,
@@ -49,8 +57,12 @@ class DiscryptorUser {
     String? publicKey,
     bool? isBot,
     bool? isWebhook,
+    bool? isInitiatorOfRelationship,
+    int? relationshipAcceptanceDate,
+    int? relationshipInitiationDate,
+    String? encryptedSymmKey,
   }) {
-    return DiscryptorUser(
+    return DiscryptorUserWithRelationship(
       id: id ?? this.id,
       createdAt: createdAt ?? this.createdAt,
       guildId: guildId ?? this.guildId,
@@ -64,6 +76,13 @@ class DiscryptorUser {
       publicKey: publicKey ?? this.publicKey,
       isBot: isBot ?? this.isBot,
       isWebhook: isWebhook ?? this.isWebhook,
+      isInitiatorOfRelationship:
+          isInitiatorOfRelationship ?? this.isInitiatorOfRelationship,
+      relationshipAcceptanceDate:
+          relationshipAcceptanceDate ?? this.relationshipAcceptanceDate,
+      relationshipInitiationDate:
+          relationshipInitiationDate ?? this.relationshipInitiationDate,
+      encryptedSymmKey: encryptedSymmKey ?? this.encryptedSymmKey,
     );
   }
 
@@ -82,11 +101,15 @@ class DiscryptorUser {
       'publicKey': publicKey,
       'isBot': isBot,
       'isWebhook': isWebhook,
+      'isInitiatorOfRelationship': isInitiatorOfRelationship,
+      'relationshipAcceptanceDate': relationshipAcceptanceDate,
+      'relationshipInitiationDate': relationshipInitiationDate,
+      'encryptedSymmKey': encryptedSymmKey,
     };
   }
 
-  factory DiscryptorUser.fromMap(Map<String, dynamic> map) {
-    return DiscryptorUser(
+  factory DiscryptorUserWithRelationship.fromMap(Map<String, dynamic> map) {
+    return DiscryptorUserWithRelationship(
       id: map['id'] as int,
       createdAt: map['createdAt'] as int,
       guildId: map['guildId'] as int,
@@ -95,27 +118,38 @@ class DiscryptorUser {
       accentColor:
           map['accentColor'] != null ? map['accentColor'] as int : null,
       discriminator: map['discriminator'] as String,
-      avatarUrl: map['avatarUrl'] as String,
+      avatarUrl: map['avatarUrl'] != null ? map['avatarUrl'] as String : null,
       defaultAvatarUrl: map['defaultAvatarUrl'] as String,
-      bannerUrl: map['bannerUrl'] as String,
+      bannerUrl: map['bannerUrl'] != null ? map['bannerUrl'] as String : null,
       publicKey: map['publicKey'] as String,
       isBot: map['isBot'] as bool,
       isWebhook: map['isWebhook'] as bool,
+      isInitiatorOfRelationship: map['isInitiatorOfRelationship'] as bool,
+      relationshipAcceptanceDate: map['relationshipAcceptanceDate'] != null
+          ? map['relationshipAcceptanceDate'] as int
+          : null,
+      relationshipInitiationDate: map['relationshipInitiationDate'] != null
+          ? map['relationshipInitiationDate'] as int
+          : null,
+      encryptedSymmKey: map['encryptedSymmKey'] != null
+          ? map['encryptedSymmKey'] as String
+          : null,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory DiscryptorUser.fromJson(String source) =>
-      DiscryptorUser.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory DiscryptorUserWithRelationship.fromJson(String source) =>
+      DiscryptorUserWithRelationship.fromMap(
+          json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
-    return 'DiscryptorUser(id: $id, createdAt: $createdAt, guildId: $guildId, status: $status, username: $username, accentColor: $accentColor, discriminator: $discriminator, avatarUrl: $avatarUrl, defaultAvatarUrl: $defaultAvatarUrl, bannerUrl: $bannerUrl, publicKey: $publicKey, isBot: $isBot, isWebhook: $isWebhook)';
+    return 'DiscryptorUserWithRelationship(id: $id, createdAt: $createdAt, guildId: $guildId, status: $status, username: $username, accentColor: $accentColor, discriminator: $discriminator, avatarUrl: $avatarUrl, defaultAvatarUrl: $defaultAvatarUrl, bannerUrl: $bannerUrl, publicKey: $publicKey, isBot: $isBot, isWebhook: $isWebhook, isInitiatorOfRelationship: $isInitiatorOfRelationship, relationshipAcceptanceDate: $relationshipAcceptanceDate, relationshipInitiationDate: $relationshipInitiationDate, encryptedSymmKey: $encryptedSymmKey)';
   }
 
   @override
-  bool operator ==(covariant DiscryptorUser other) {
+  bool operator ==(covariant DiscryptorUserWithRelationship other) {
     if (identical(this, other)) return true;
 
     return other.id == id &&
@@ -130,7 +164,11 @@ class DiscryptorUser {
         other.bannerUrl == bannerUrl &&
         other.publicKey == publicKey &&
         other.isBot == isBot &&
-        other.isWebhook == isWebhook;
+        other.isWebhook == isWebhook &&
+        other.isInitiatorOfRelationship == isInitiatorOfRelationship &&
+        other.relationshipAcceptanceDate == relationshipAcceptanceDate &&
+        other.relationshipInitiationDate == relationshipInitiationDate &&
+        other.encryptedSymmKey == encryptedSymmKey;
   }
 
   @override
@@ -147,6 +185,10 @@ class DiscryptorUser {
         bannerUrl.hashCode ^
         publicKey.hashCode ^
         isBot.hashCode ^
-        isWebhook.hashCode;
+        isWebhook.hashCode ^
+        isInitiatorOfRelationship.hashCode ^
+        relationshipAcceptanceDate.hashCode ^
+        relationshipInitiationDate.hashCode ^
+        encryptedSymmKey.hashCode;
   }
 }

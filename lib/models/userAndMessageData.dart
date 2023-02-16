@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 
 import 'package:discryptor/models/discryptor_message.dart';
-import 'package:discryptor/models/discryptor_user.dart';
+import 'package:discryptor/models/discryptor_user_with_relationship.dart';
 
 class UserAndMessageData {
   final List<DiscryptorUserWithRelationship> users;

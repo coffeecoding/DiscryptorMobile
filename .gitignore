@@ -1,3 +1,6 @@
+# Project-specific
+ling/config/sample_data.dart
+
 # Miscellaneous
 *.class
 *.log
