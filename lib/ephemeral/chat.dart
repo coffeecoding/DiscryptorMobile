@@ -1,9 +1,10 @@
-part of 'chat_cubit.dart';
+import 'package:discryptor/models/discryptor_user_with_relationship.dart';
+import 'package:equatable/equatable.dart';
 
 enum ChatStatus { initial, busyLoading, busySending, error, success }
 
-class ChatState extends Equatable {
-  const ChatState(
+class ChatViewModel extends Equatable {
+  const ChatViewModel(
     this.user, {
     this.status = ChatStatus.initial,
     this.message = '',

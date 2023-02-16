@@ -12,7 +12,9 @@ dependencies:
   flutter:
     sdk: flutter
   bloc: ^8.1.0
+  cryptography: ^2.0.5
   dio: ^4.0.6
+  encrypt: ^5.0.1
   equatable: ^2.0.5
   fluentui_system_icons: ^1.1.184
   flutter_bloc: ^8.1.1
@@ -23,6 +25,7 @@ dependencies:
   pointycastle: ^3.6.1
   shared_preferences: ^2.0.17
   uuid:
+  xml:
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

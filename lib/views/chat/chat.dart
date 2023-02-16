@@ -1,4 +1,5 @@
 import 'package:discryptor/cubits/selected_chat/selected_chat_cubit.dart';
+import 'package:discryptor/main.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,7 +28,8 @@ class ChatScreen extends StatelessWidget {
                 elevation: 0,
                 backgroundColor: Colors.transparent,
                 leading: IconButton(
-                    onPressed: () {},
+                    onPressed: () =>
+                        DiscryptorApp.navigatorKey.currentState!.pop(),
                     icon: const Icon(FluentIcons.arrow_left_20_filled)),
                 titleSpacing: 0,
                 bottom: PreferredSize(
@@ -39,7 +41,6 @@ class ChatScreen extends StatelessWidget {
                     .read<SelectedChatCubit>()
                     .state
                     .chat!
-                    .state
                     .user
                     .username),
               ),

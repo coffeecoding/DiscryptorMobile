@@ -12,7 +12,7 @@ class SelectedChatState extends Equatable {
 
   SelectedChatState copyWith(
       {SelectedChatStatus? status,
-      ChatCubit? chat,
+      ChatViewModel? chat,
       String? message,
       String? error}) {
     return SelectedChatState(
@@ -23,11 +23,10 @@ class SelectedChatState extends Equatable {
   }
 
   final SelectedChatStatus status;
-  final ChatCubit? chat;
+  final ChatViewModel? chat;
   final String message;
   final String error;
 
   @override
-  List<Object?> get props =>
-      [status, chat?.state.user.id, chat, message, error];
+  List<Object?> get props => [status, chat?.user.id, chat, message, error];
 }

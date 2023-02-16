@@ -1,13 +1,11 @@
 import 'package:discryptor/config/sample_data.dart';
-import 'package:discryptor/cubits/chat/chat_cubit.dart';
 import 'package:discryptor/cubits/cubits.dart';
+import 'package:discryptor/ephemeral/chat.dart';
 import 'package:discryptor/main.dart';
 import 'package:discryptor/views/chat/chat.dart';
 import 'package:discryptor/views/login/login.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -53,7 +51,7 @@ class HomeScreen extends StatelessWidget {
                   itemBuilder: (context, index) => RawMaterialButton(
                       onPressed: () {
                         context.read<SelectedChatCubit>().selectChat(
-                            ChatCubit(SampleData.sampleContacts[index]));
+                            ChatViewModel(SampleData.sampleContacts[index]));
                         DiscryptorApp.navigatorKey.currentState!
                             .pushNamed(ChatScreen.routeName);
                       },

@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:discryptor/cubits/chat/chat_cubit.dart';
+import 'package:discryptor/ephemeral/chat.dart';
 import 'package:equatable/equatable.dart';
 
 part 'selected_chat_state.dart';
@@ -7,7 +7,7 @@ part 'selected_chat_state.dart';
 class SelectedChatCubit extends Cubit<SelectedChatState> {
   SelectedChatCubit() : super(const SelectedChatState());
 
-  void selectChat(ChatCubit chat) {
+  void selectChat(ChatViewModel chat) {
     emit(SelectedChatState(chat: chat));
   }
 
