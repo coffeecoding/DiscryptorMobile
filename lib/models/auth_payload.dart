@@ -1,9 +1,10 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:discryptor/models/common/json_serializable.dart';
 import 'package:discryptor/models/credentials.dart';
 
-class AuthPayload {
+class AuthPayload extends JsonSerializable {
   final String challengeToken;
   final bool overrideCreds;
   final Credentials creds;
@@ -12,6 +13,9 @@ class AuthPayload {
     required this.overrideCreds,
     required this.creds,
   });
+
+  @override
+  CustomType get customType => CustomType.authPayload;
 
   AuthPayload copyWith({
     String? challengeToken,

@@ -1,18 +1,22 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:discryptor/models/common/json_serializable.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:discryptor/models/discryptor_message.dart';
 import 'package:discryptor/models/discryptor_user_with_relationship.dart';
 
-class UserAndMessageData {
+class UserAndMessageData extends JsonSerializable {
   final List<DiscryptorUserWithRelationship> users;
   final List<DiscryptorMessage> messages;
   UserAndMessageData({
     required this.users,
     required this.messages,
   });
+
+  @override
+  CustomType get customType => CustomType.userAndMessageData;
 
   UserAndMessageData copyWith({
     List<DiscryptorUserWithRelationship>? users,

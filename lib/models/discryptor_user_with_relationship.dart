@@ -1,7 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-class DiscryptorUserWithRelationship {
+import 'package:discryptor/models/common/json_serializable.dart';
+
+class DiscryptorUserWithRelationship extends JsonSerializable {
   final int id;
   final int createdAt;
   final int guildId;
@@ -38,6 +40,9 @@ class DiscryptorUserWithRelationship {
     this.relationshipInitiationDate,
     this.encryptedSymmKey,
   });
+
+  @override
+  CustomType get customType => CustomType.discryptorUserWithRelationship;
 
   String get usedAvatarUrl =>
       avatarUrl == null || avatarUrl == '' ? defaultAvatarUrl : avatarUrl!;

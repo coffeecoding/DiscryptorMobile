@@ -10,7 +10,7 @@ class AuthState extends Equatable {
 
   AuthState copyWith({
     AuthStatus? status,
-    DiscryptorUserWithRelationship? user,
+    DiscryptorUser? user,
     String? error,
   }) =>
       AuthState(
@@ -19,7 +19,7 @@ class AuthState extends Equatable {
           error: error ?? this.error);
 
   final AuthStatus status;
-  final DiscryptorUserWithRelationship? user;
+  final DiscryptorUser? user;
   final String error;
 
   @override

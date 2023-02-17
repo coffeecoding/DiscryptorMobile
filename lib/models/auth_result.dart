@@ -1,10 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:discryptor/models/common/json_serializable.dart';
 import 'package:discryptor/models/credentials.dart';
 import 'package:discryptor/models/discryptor_user.dart';
 
-class AuthResult {
+class AuthResult extends JsonSerializable {
   final String token;
   final String refreshToken;
   final Credentials credentials;
@@ -15,6 +16,9 @@ class AuthResult {
     required this.credentials,
     required this.user,
   });
+
+  @override
+  CustomType get customType => CustomType.authResult;
 
   AuthResult copyWith({
     String? token,

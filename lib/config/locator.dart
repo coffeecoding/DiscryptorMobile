@@ -1,4 +1,4 @@
-import 'package:discryptor/repos/preference_repo.dart';
+import 'package:discryptor/repos/repos.dart';
 import 'package:discryptor/services/services.dart';
 import 'package:get_it/get_it.dart';
 
@@ -10,5 +10,6 @@ Future<void> setUpLocator() async {
   locator
     ..registerSingleton<PreferenceRepo>(PreferenceRepo())
     ..registerSingleton<NetworkService>(NetworkService())
+    ..registerSingleton<ApiRepo>(ApiRepo())
     ..registerSingleton<CryptoService>(CryptoService());
 }

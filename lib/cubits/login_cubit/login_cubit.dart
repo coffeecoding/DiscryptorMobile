@@ -6,9 +6,9 @@ import 'package:equatable/equatable.dart';
 part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
-  LoginCubit(this.chatListCubit) : super(const LoginState());
+  LoginCubit(this.authCubit) : super(const LoginState());
 
-  final AuthCubit chatListCubit;
+  final AuthCubit authCubit;
 
   void usernameChanged(String username) {
     emit(state.copyWith(username: username));
@@ -28,15 +28,20 @@ class LoginCubit extends Cubit<LoginState> {
       AuthResult authResult = AuthResult.fromJson('dummy json');
       emit(state.copyWith(status: LoginStatus.success));
       // load rest of data
-      chatListCubit.onAuthenticated(authResult);
+      authCubit.onAuthenticated(authResult);
     } catch (e) {
       emit(state.copyWith(status: LoginStatus.error, message: '$e'));
     }
   }
 
   void logout() {
-    emit(
-        state.copyWith(status: LoginStatus.initial, password: '', message: ''));
+    try {
+      authCubit.logout();
+      emit(state.copyWith(
+          status: LoginStatus.initial, password: '', message: ''));
+    } catch (e) {
+      // todo: handle
+    }
   }
 
   bool validateForm() {

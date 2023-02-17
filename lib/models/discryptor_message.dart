@@ -1,7 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-class DiscryptorMessage {
+import 'package:discryptor/models/common/json_serializable.dart';
+
+class DiscryptorMessage extends JsonSerializable {
   final int id;
   final int authorId;
   final int channelId;
@@ -24,6 +26,9 @@ class DiscryptorMessage {
     required this.createdAt,
     required this.timestampt,
   });
+
+  @override
+  CustomType get customType => CustomType.discryptorMessage;
 
   DiscryptorMessage copyWith({
     int? id,

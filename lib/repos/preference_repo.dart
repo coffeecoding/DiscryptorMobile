@@ -14,6 +14,9 @@ class PreferenceRepo {
   static const String _pubkeyKey = 'pubkey';
   static const String _signkeyKey = 'signkey';
 
+  static const String _tokenKey = 'token';
+  static const String _refreshTokenKey = 'refreshToken';
+
   static const String _syncKey = 'enableSync';
   static const bool _defaultSyncValue = true;
   static const String _darkModeKey = 'useDarkMode';
@@ -29,6 +32,9 @@ class PreferenceRepo {
   Future<String?> get pubkey async =>
       _prefs.then((sp) => sp.getString(_pubkeyKey));
   Future<String?> get signkey async => _secureStorage.read(key: _signkeyKey);
+  Future<String?> get token async => _secureStorage.read(key: _tokenKey);
+  Future<String?> get refreshToken async =>
+      _secureStorage.read(key: _refreshTokenKey);
   Future<DiscryptorUser?> get loggedInUser =>
       _prefs.then((SharedPreferences prefs) {
         String? userJson = prefs.getString(_userKey);
@@ -58,14 +64,31 @@ class PreferenceRepo {
     await _secureStorage.deleteAll();
   }
 
-  Future<void> setAuth({
-    required DiscryptorUser user,
-    required String username,
-    required String password,
-    required String pubkey,
-    required String privkey,
-    required String signkey,
-  }) async {
+  Future<void> setToken(String token) async {
+    AndroidOptions androidOptions = AndroidOptions();
+    try {
+      await _secureStorage.write(key: _tokenKey, value: token);
+    } catch (_) {
+      try {
+        await _secureStorage.deleteAll(
+          aOptions: androidOptions,
+        );
+      } catch (_) {
+        // Invoke logger here
+      }
+      rethrow;
+    }
+  }
+
+  Future<void> setAuth(
+      {required DiscryptorUser user,
+      required String username,
+      required String password,
+      required String pubkey,
+      required String privkey,
+      required String signkey,
+      required String token,
+      required String refreshToken}) async {
     _prefs.then((prefs) => prefs.setString(_userKey, user.toJson()));
     AndroidOptions androidOptions = AndroidOptions();
     try {
@@ -82,6 +105,16 @@ class PreferenceRepo {
       await _secureStorage.write(
         key: _privkeyKey,
         value: privkey,
+        aOptions: androidOptions,
+      );
+      await _secureStorage.write(
+        key: _tokenKey,
+        value: token,
+        aOptions: androidOptions,
+      );
+      await _secureStorage.write(
+        key: _refreshTokenKey,
+        value: refreshToken,
         aOptions: androidOptions,
       );
       await _prefs.then((sp) => sp.setString(_pubkeyKey, pubkey));

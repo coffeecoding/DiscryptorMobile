@@ -1,7 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-class Credentials {
+import 'package:discryptor/models/common/json_serializable.dart';
+
+class Credentials extends JsonSerializable {
   final int userId;
   final String fullname;
   final String passwordHash;
@@ -18,6 +20,9 @@ class Credentials {
     required this.privateKeyEncrypted,
     required this.created,
   });
+
+  @override
+  CustomType get customType => CustomType.credentials;
 
   Credentials copyWith({
     int? userId,
