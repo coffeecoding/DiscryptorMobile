@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:discryptor/ephemeral/chat.dart';
+import 'package:discryptor/cubitvms/chat_vm.dart';
 import 'package:equatable/equatable.dart';
 
 part 'selected_chat_state.dart';

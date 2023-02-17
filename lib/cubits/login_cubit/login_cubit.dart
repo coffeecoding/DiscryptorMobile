@@ -1,10 +1,13 @@
 import 'package:bloc/bloc.dart';
+import 'package:discryptor/cubits/auth/auth_cubit.dart';
 import 'package:equatable/equatable.dart';
 
 part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
-  LoginCubit() : super(const LoginState());
+  LoginCubit(this.chatListCubit) : super(const LoginState());
+
+  final AuthCubit chatListCubit;
 
   void usernameChanged(String username) {
     emit(state.copyWith(username: username));
@@ -20,6 +23,8 @@ class LoginCubit extends Cubit<LoginState> {
       if (!validateForm()) return;
       await Future.delayed(const Duration(milliseconds: 400));
       emit(state.copyWith(status: LoginStatus.success));
+      // load rest of data
+      chatListCubit.onAuthenticated();
     } catch (e) {
       emit(state.copyWith(status: LoginStatus.error, message: '$e'));
     }

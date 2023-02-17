@@ -1,5 +1,7 @@
 import 'package:discryptor/config/custom_router.dart';
 import 'package:discryptor/config/locator.dart';
+import 'package:discryptor/cubits/auth/auth_cubit.dart';
+import 'package:discryptor/cubits/chat_list/chat_list_cubit.dart';
 import 'package:discryptor/views/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,10 +27,19 @@ class DiscryptorApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: <BlocProvider<dynamic>>[
-        BlocProvider<LoginCubit>(
-            lazy: false, create: (context) => LoginCubit()),
         BlocProvider<SelectedChatCubit>(
-            lazy: false, create: ((context) => SelectedChatCubit()))
+            lazy: false, create: ((context) => SelectedChatCubit())),
+        BlocProvider<ChatListCubit>(
+          lazy: false,
+          create: ((context) =>
+              ChatListCubit(context.read<SelectedChatCubit>())),
+        ),
+        BlocProvider<AuthCubit>(
+            lazy: false,
+            create: (context) => AuthCubit(context.read<ChatListCubit>())),
+        BlocProvider<LoginCubit>(
+            lazy: false,
+            create: (context) => LoginCubit(context.read<AuthCubit>())),
       ],
       child: MaterialApp(
         title: 'Discryptor',

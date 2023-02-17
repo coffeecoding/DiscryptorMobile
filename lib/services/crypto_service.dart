@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:discryptor/config/locator.dart';
-import 'package:discryptor/ephemeral/chat_message.dart';
+import 'package:discryptor/models/chat_message.dart';
 import 'package:discryptor/repos/preference_repo.dart';
 
 import '../utils/crypto/crypto.dart';
