@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:discryptor/cubits/auth/auth_cubit.dart';
+import 'package:discryptor/models/auth_result.dart';
 import 'package:equatable/equatable.dart';
 
 part 'login_state.dart';
@@ -22,9 +23,12 @@ class LoginCubit extends Cubit<LoginState> {
       emit(state.copyWith(status: LoginStatus.busy));
       if (!validateForm()) return;
       await Future.delayed(const Duration(milliseconds: 400));
+      // Todo retrieve data, such as user etc..
+      // Todo: Test with actually valid json result from desktop client
+      AuthResult authResult = AuthResult.fromJson('dummy json');
       emit(state.copyWith(status: LoginStatus.success));
       // load rest of data
-      chatListCubit.onAuthenticated();
+      chatListCubit.onAuthenticated(authResult);
     } catch (e) {
       emit(state.copyWith(status: LoginStatus.error, message: '$e'));
     }

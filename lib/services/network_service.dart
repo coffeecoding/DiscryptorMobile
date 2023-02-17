@@ -18,9 +18,8 @@ class NetworkService {
         };
 
   static const String baseUrl = 'server.discryptor.io';
-  static const int port = 443;
+  static const int port = 80;
 
-  // The Dio instance for all of the application
   final http.Client _client;
   final Map<String, String> _defaultHeaders;
 
