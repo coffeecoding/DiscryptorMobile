@@ -21,7 +21,7 @@ class DiscryptorUserWithRelationship extends JsonSerializable {
   final int? relationshipAcceptanceDate;
   final int? relationshipInitiationDate;
   final String? encryptedSymmKey;
-  DiscryptorUserWithRelationship({
+  const DiscryptorUserWithRelationship({
     required this.id,
     required this.createdAt,
     required this.guildId,
@@ -40,6 +40,29 @@ class DiscryptorUserWithRelationship extends JsonSerializable {
     this.relationshipInitiationDate,
     this.encryptedSymmKey,
   });
+
+  @override
+  List<Object?> get props => [
+        id,
+        createdAt,
+        guildId,
+        status,
+        username,
+        accentColor,
+        discriminator,
+        avatarUrl,
+        defaultAvatarUrl,
+        avatarUrl,
+        defaultAvatarUrl,
+        bannerUrl,
+        publicKey,
+        isBot,
+        isWebhook,
+        isInitiatorOfRelationship,
+        relationshipAcceptanceDate,
+        relationshipAcceptanceDate,
+        encryptedSymmKey
+      ];
 
   @override
   CustomType get customType => CustomType.discryptorUserWithRelationship;

@@ -1,5 +1,6 @@
 part of 'auth_cubit.dart';
 
+// this is referring to auth state with *Discord*.
 enum AuthStatus { authenticated, unauthenticated, autherror }
 
 class AuthState extends Equatable {

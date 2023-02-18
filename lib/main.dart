@@ -1,12 +1,12 @@
 import 'package:discryptor/config/custom_router.dart';
 import 'package:discryptor/config/locator.dart';
-import 'package:discryptor/cubits/auth/auth_cubit.dart';
-import 'package:discryptor/cubits/chat_list/chat_list_cubit.dart';
+import 'package:discryptor/repos/preference_repo.dart';
 import 'package:discryptor/views/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'cubits/cubits.dart';
+import 'services/services.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,7 +36,7 @@ class DiscryptorApp extends StatelessWidget {
         ),
         BlocProvider<AuthCubit>(
             lazy: false,
-            create: (context) => AuthCubit(context.read<ChatListCubit>())),
+            create: (context) => AuthCubit(locator.get<PreferenceRepo>(), locator.get<NetworkService>(), context.read<ChatListCubit>())),
         BlocProvider<LoginCubit>(
             lazy: false,
             create: (context) => LoginCubit(context.read<AuthCubit>())),

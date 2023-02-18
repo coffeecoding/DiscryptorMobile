@@ -21,7 +21,7 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<LoginCubit, LoginState>(
         listener: (context, state) => {
-              if (state.status == LoginStatus.success)
+              if (state.status == LoginStatus.loggedIn)
                 DiscryptorApp.navigatorKey.currentState!
                     .pushAndRemoveUntil(HomeScreen.route(), (route) => false)
             },

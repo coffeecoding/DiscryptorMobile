@@ -26,7 +26,7 @@ class LoginCubit extends Cubit<LoginState> {
       // Todo retrieve data, such as user etc..
       // Todo: Test with actually valid json result from desktop client
       AuthResult authResult = AuthResult.fromJson('dummy json');
-      emit(state.copyWith(status: LoginStatus.success));
+      emit(state.copyWith(status: LoginStatus.loggedIn));
       // load rest of data
       authCubit.onAuthenticated(authResult);
     } catch (e) {

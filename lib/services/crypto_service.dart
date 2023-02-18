@@ -11,8 +11,9 @@ class CryptoService {
 
   late PreferenceRepo prefsRepo;
 
-  base64ToUTF8(String input) => utf8.decode(base64.decode(input).toList());
-  utf8ToBase64(String input) => base64.encode(utf8.encode(input));
+  static base64ToUTF8(String input) =>
+      utf8.decode(base64.decode(input).toList());
+  static utf8ToBase64(String input) => base64.encode(utf8.encode(input));
 
   ChatMessage encryptMessage(ChatMessage chatMessage, String key) {
     StatefulAES dummyAes = StatefulAES();

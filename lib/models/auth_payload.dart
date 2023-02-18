@@ -5,43 +5,43 @@ import 'package:discryptor/models/common/json_serializable.dart';
 import 'package:discryptor/models/credentials.dart';
 
 class AuthPayload extends JsonSerializable {
+  final int userId;
   final String challengeToken;
   final bool overrideCreds;
-  final Credentials creds;
-  AuthPayload({
+  const AuthPayload({
+    required this.userId,
     required this.challengeToken,
     required this.overrideCreds,
-    required this.creds,
   });
 
   @override
   CustomType get customType => CustomType.authPayload;
 
   AuthPayload copyWith({
+    int? userId,
     String? challengeToken,
     bool? overrideCreds,
-    Credentials? creds,
   }) {
     return AuthPayload(
+      userId: userId ?? this.userId,
       challengeToken: challengeToken ?? this.challengeToken,
       overrideCreds: overrideCreds ?? this.overrideCreds,
-      creds: creds ?? this.creds,
     );
   }
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
+      'userId': userId,
       'challengeToken': challengeToken,
       'overrideCreds': overrideCreds,
-      'creds': creds.toMap(),
     };
   }
 
   factory AuthPayload.fromMap(Map<String, dynamic> map) {
     return AuthPayload(
+      userId: map['userId'] as int,
       challengeToken: map['challengeToken'] as String,
       overrideCreds: map['overrideCreds'] as bool,
-      creds: Credentials.fromMap(map['creds'] as Map<String, dynamic>),
     );
   }
 
@@ -52,18 +52,8 @@ class AuthPayload extends JsonSerializable {
 
   @override
   String toString() =>
-      'AuthPayload(challengeToken: $challengeToken, overrideCreds: $overrideCreds, creds: $creds)';
+      'AuthPayload(userId: $userId, challengeToken: $challengeToken, overrideCreds: $overrideCreds)';
 
   @override
-  bool operator ==(covariant AuthPayload other) {
-    if (identical(this, other)) return true;
-
-    return other.challengeToken == challengeToken &&
-        other.overrideCreds == overrideCreds &&
-        other.creds == creds;
-  }
-
-  @override
-  int get hashCode =>
-      challengeToken.hashCode ^ overrideCreds.hashCode ^ creds.hashCode;
+  List<Object?> get props => [userId, challengeToken, overrideCreds];
 }

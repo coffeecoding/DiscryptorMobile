@@ -19,12 +19,29 @@ class DiscryptorUser extends JsonSerializable {
   final bool isWebhook;
 
   @override
+  List<Object?> get props => [
+        id,
+        createdAt,
+        guildId,
+        status,
+        username,
+        accentColor,
+        discriminator,
+        avatarUrl,
+        defaultAvatarUrl,
+        bannerUrl,
+        publicKey,
+        isBot,
+        isWebhook
+      ];
+
+  @override
   CustomType get customType => CustomType.discryptorUser;
 
   String get usedAvatarUrl => avatarUrl.isEmpty ? defaultAvatarUrl : avatarUrl;
   String get fullname => '$username#$discriminator';
 
-  DiscryptorUser({
+  const DiscryptorUser({
     required this.id,
     required this.createdAt,
     required this.guildId,

@@ -10,10 +10,13 @@ import 'package:discryptor/models/discryptor_user_with_relationship.dart';
 class UserAndMessageData extends JsonSerializable {
   final List<DiscryptorUserWithRelationship> users;
   final List<DiscryptorMessage> messages;
-  UserAndMessageData({
+  const UserAndMessageData({
     required this.users,
     required this.messages,
   });
+
+  @override
+  List<Object?> get props => [users, messages];
 
   @override
   CustomType get customType => CustomType.userAndMessageData;

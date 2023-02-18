@@ -10,6 +10,7 @@ Future<void> setUpLocator() async {
   locator
     ..registerSingleton<PreferenceRepo>(PreferenceRepo())
     ..registerSingleton<NetworkService>(NetworkService())
+    ..registerSingleton<AuthRepo>(AuthRepo())
     ..registerSingleton<ApiRepo>(ApiRepo())
     ..registerSingleton<CryptoService>(CryptoService());
 }

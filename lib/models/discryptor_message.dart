@@ -13,8 +13,8 @@ class DiscryptorMessage extends JsonSerializable {
   final String cleanContent;
   final String content;
   final int createdAt;
-  final int timestampt;
-  DiscryptorMessage({
+  final int timestamp;
+  const DiscryptorMessage({
     required this.id,
     required this.authorId,
     required this.channelId,
@@ -24,8 +24,22 @@ class DiscryptorMessage extends JsonSerializable {
     required this.cleanContent,
     required this.content,
     required this.createdAt,
-    required this.timestampt,
+    required this.timestamp,
   });
+
+  @override
+  List<Object?> get props => [
+        id,
+        authorId,
+        channelId,
+        authorName,
+        recipientId,
+        isPinned,
+        cleanContent,
+        content,
+        createdAt,
+        timestamp
+      ];
 
   @override
   CustomType get customType => CustomType.discryptorMessage;
@@ -40,7 +54,7 @@ class DiscryptorMessage extends JsonSerializable {
     String? cleanContent,
     String? content,
     int? createdAt,
-    int? timestampt,
+    int? timestamp,
   }) {
     return DiscryptorMessage(
       id: id ?? this.id,
@@ -52,7 +66,7 @@ class DiscryptorMessage extends JsonSerializable {
       cleanContent: cleanContent ?? this.cleanContent,
       content: content ?? this.content,
       createdAt: createdAt ?? this.createdAt,
-      timestampt: timestampt ?? this.timestampt,
+      timestamp: timestamp ?? this.timestamp,
     );
   }
 
@@ -67,7 +81,7 @@ class DiscryptorMessage extends JsonSerializable {
       'cleanContent': cleanContent,
       'content': content,
       'createdAt': createdAt,
-      'timestampt': timestampt,
+      'timestamp': timestamp,
     };
   }
 
@@ -82,7 +96,7 @@ class DiscryptorMessage extends JsonSerializable {
       cleanContent: map['cleanContent'] as String,
       content: map['content'] as String,
       createdAt: map['createdAt'] as int,
-      timestampt: map['timestampt'] as int,
+      timestamp: map['timestamp'] as int,
     );
   }
 
@@ -93,7 +107,7 @@ class DiscryptorMessage extends JsonSerializable {
 
   @override
   String toString() {
-    return 'DiscryptorMessage(id: $id, authorId: $authorId, channelId: $channelId, authorName: $authorName, recipientId: $recipientId, isPinned: $isPinned, cleanContent: $cleanContent, content: $content, createdAt: $createdAt, timestampt: $timestampt)';
+    return 'DiscryptorMessage(id: $id, authorId: $authorId, channelId: $channelId, authorName: $authorName, recipientId: $recipientId, isPinned: $isPinned, cleanContent: $cleanContent, content: $content, createdAt: $createdAt, timestamp: $timestamp)';
   }
 
   @override
@@ -109,7 +123,7 @@ class DiscryptorMessage extends JsonSerializable {
         other.cleanContent == cleanContent &&
         other.content == content &&
         other.createdAt == createdAt &&
-        other.timestampt == timestampt;
+        other.timestamp == timestamp;
   }
 
   @override
@@ -123,6 +137,6 @@ class DiscryptorMessage extends JsonSerializable {
         cleanContent.hashCode ^
         content.hashCode ^
         createdAt.hashCode ^
-        timestampt.hashCode;
+        timestamp.hashCode;
   }
 }

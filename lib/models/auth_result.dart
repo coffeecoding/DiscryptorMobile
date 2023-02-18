@@ -10,12 +10,15 @@ class AuthResult extends JsonSerializable {
   final String refreshToken;
   final Credentials credentials;
   final DiscryptorUser user;
-  AuthResult({
+  const AuthResult({
     required this.token,
     required this.refreshToken,
     required this.credentials,
     required this.user,
   });
+
+  @override
+  List<Object?> get props => [token, refreshToken, credentials, user];
 
   @override
   CustomType get customType => CustomType.authResult;

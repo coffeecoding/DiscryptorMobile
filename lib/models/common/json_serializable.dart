@@ -1,4 +1,5 @@
 import 'package:discryptor/models/models.dart';
+import 'package:equatable/equatable.dart';
 
 enum CustomType {
   authPayload,
@@ -11,8 +12,8 @@ enum CustomType {
   userAndMessageData
 }
 
-abstract class JsonSerializable {
-  JsonSerializable();
+abstract class JsonSerializable extends Equatable {
+  const JsonSerializable();
 
   Map<String, dynamic> toMap();
   CustomType get customType;

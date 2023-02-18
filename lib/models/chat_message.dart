@@ -12,6 +12,9 @@ class ChatMessage extends JsonSerializable {
   });
 
   @override
+  List<Object?> get props => [iv, message];
+
+  @override
   CustomType get customType => CustomType.chatMessage;
 
   ChatMessage clone() => ChatMessage(iv: iv, message: message);

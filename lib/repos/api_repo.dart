@@ -1,87 +1,79 @@
 import 'dart:convert';
 
 import 'package:discryptor/config/locator.dart';
-import 'package:discryptor/models/discryptor_user.dart';
-import 'package:discryptor/repos/preference_repo.dart';
-import 'package:discryptor/services/network_service.dart';
-import 'package:http/http.dart';
 import 'package:discryptor/extensions/http_ext.dart';
+import 'package:discryptor/models/key_value_pair.dart';
+import 'package:discryptor/models/models.dart';
+import 'package:discryptor/services/network_service.dart';
+
+import 'auth_repo.dart';
 
 // This class may eventually be split into
-// - auth repository
 // - message repository
 // - user repository
 class ApiRepo {
   ApiRepo()
-      : _prefsRepo = locator.get<PreferenceRepo>(),
-        _net = locator.get<NetworkService>();
+      : _net = locator.get<NetworkService>(),
+        _auth = locator.get<AuthRepo>();
 
   final NetworkService _net;
-  final PreferenceRepo _prefsRepo;
+  final AuthRepo _auth;
 
-  Future<DiscryptorUser?> initAuth() async {
+  Future<ApiResponse<List<DiscryptorMessage>>> getMessages(
+      int? fromMsgId) async {
     try {
-      String? token = await _prefsRepo.token;
-      if (token == null) {
-        print('Init auth failed: token was null');
-        return null;
+      final uri =
+          '/api/items${fromMsgId == null ? '' : '?fromMessageId=$fromMsgId'}';
+      final re = await _net.get(uri);
+      if (!re.isSuccess()) {
+        print('Getting messages failed: ${re.reasonPhrase}');
+        return ApiResponse(re.statusCode, re.reasonPhrase, null, false);
       }
-      _net.setAuthHeader(token);
-      bool hasValidToken = await _validateOrRenewToken();
-      if (!hasValidToken) {
-        // reauthentication needed!
-        print('Token validation/renewal failed: Re-authentication needed!');
-        return null;
-      }
-      final user = await _prefsRepo.loggedInUser;
-      if (user == null) {
-        print('Init auth failed: user was null');
-        return null;
-      }
-      return user;
+      List<DiscryptorMessage> res = (jsonDecode(re.body) as List)
+          .map((i) => DiscryptorMessage.fromJson(i))
+          .toList();
+      return ApiResponse(re.statusCode, re.reasonPhrase, res, re.isSuccess());
     } catch (e) {
-      print('Init auth failed: $e');
-      return null;
+      print('Error getting messages: $e');
+      return ApiResponse(300, 'Unexpected error', null, false);
     }
   }
 
-  Future<bool> _refreshAuth() async {
+  /// template function for any generic API call
+  Future<ApiResponse<AuthResult>> templatefn() async {
     try {
-      String? refreshToken = await _prefsRepo.refreshToken;
-      if (refreshToken == null) return false;
-      // temporarily set auth token to refresh token to get a new normal auth token
-      _net.setAuthHeader(refreshToken);
-      Response re = await _net.get('/api/auth/refresh');
-      if (!re.isSuccessStatusCode()) {
-        print('Auth refresh failed: ${re.reasonPhrase}');
-        return false;
+      const uri = '/api/';
+      final re = await _net.get(uri);
+      if (re.statusCode == 401) {
+        bool success = await _auth.refreshAuth();
+        if (success) return templatefn();
+        return ApiResponse(re.statusCode, 'Re-authenticate', null, false);
       }
-      String newToken = re.body;
-      _net.setAuthHeader(newToken);
-      _prefsRepo.setToken(newToken);
-      return true;
+      //final res = CLASS.fromJson(re.body);
+      return ApiResponse(re.statusCode, re.reasonPhrase, null, re.isSuccess());
     } catch (e) {
-      print('Failed to refresh auth: $e');
-      return false;
+      print('Error doing X: $e');
+      return ApiResponse(300, 'Unexpected error', null, false);
     }
   }
 
-  Future<bool> _validateOrRenewToken() async {
+  Future<ApiResponse<List<KeyValuePair<dynamic, dynamic>>>>
+      getUserStatuses() async {
     try {
-      Response re = await _net.get('/api/authcheck');
-      if (!re.isSuccessStatusCode()) {
-        bool refreshSuccess = await _refreshAuth();
-        if (!refreshSuccess) {
-          print('Failed to refresh auth token');
-          return false;
-        }
-        return await _validateOrRenewToken();
+      const uri = '/api/users/statuses';
+      final re = await _net.get(uri);
+      if (re.statusCode == 401) {
+        bool success = await _auth.refreshAuth();
+        if (success) return getUserStatuses();
+        return ApiResponse(re.statusCode, 'Re-authenticate', null, false);
       }
-      bool isValidToken = jsonDecode(re.body);
-      return isValidToken;
+      List<KeyValuePair<int, int>> res = (jsonDecode(re.body) as List)
+          .map((i) => KeyValuePair<int, int>.fromMap(i))
+          .toList();
+      return ApiResponse(re.statusCode, re.reasonPhrase, res, re.isSuccess());
     } catch (e) {
-      print('$e');
-      return false;
+      print('Error getting user statuses: $e');
+      return ApiResponse(300, 'Unexpected error', null, false);
     }
   }
 }

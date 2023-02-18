@@ -1,6 +1,9 @@
 import 'package:discryptor/models/discryptor_user.dart';
+import 'package:discryptor/services/crypto_service.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../models/credentials.dart';
 
 class PreferenceRepo {
   PreferenceRepo()
@@ -9,63 +12,44 @@ class PreferenceRepo {
 
   static const String _userKey = 'user';
   static const String _usernameKey = 'username';
-  static const String _passwordKey = 'password';
+  static const String _useridKey = 'userid';
   static const String _privkeyKey = 'privkey';
-  static const String _pubkeyKey = 'pubkey';
-  static const String _signkeyKey = 'signkey';
+
+  static const String _credentialsKey = 'credskey';
 
   static const String _tokenKey = 'token';
   static const String _refreshTokenKey = 'refreshToken';
-
-  static const String _syncKey = 'enableSync';
-  static const bool _defaultSyncValue = true;
-  static const String _darkModeKey = 'useDarkMode';
-  static const bool _defaultUseDarkModeValue = true;
 
   final FlutterSecureStorage _secureStorage;
   final Future<SharedPreferences> _prefs;
 
   Future<bool> get loggedIn async => await username != null;
-  Future<String?> get username async => _secureStorage.read(key: _usernameKey);
-  Future<String?> get password async => _secureStorage.read(key: _passwordKey);
+  Future<String?> get username async =>
+      _prefs.then((prefs) => prefs.getString(_usernameKey));
+  Future<int?> get userId async =>
+      _prefs.then((prefs) => prefs.getInt(_useridKey));
   Future<String?> get privkey async => _secureStorage.read(key: _privkeyKey);
-  Future<String?> get pubkey async =>
-      _prefs.then((sp) => sp.getString(_pubkeyKey));
-  Future<String?> get signkey async => _secureStorage.read(key: _signkeyKey);
   Future<String?> get token async => _secureStorage.read(key: _tokenKey);
   Future<String?> get refreshToken async =>
       _secureStorage.read(key: _refreshTokenKey);
-  Future<DiscryptorUser?> get loggedInUser =>
-      _prefs.then((SharedPreferences prefs) {
+  Future<DiscryptorUser?> get user => _prefs.then((SharedPreferences prefs) {
         String? userJson = prefs.getString(_userKey);
         if (userJson == null) return null;
         return DiscryptorUser.fromJson(userJson);
       });
 
-  Future<bool> get enableSync async =>
-      await _prefs.then((SharedPreferences prefs) =>
-          prefs.getBool(_syncKey) ?? _defaultSyncValue);
-
-  Future<void> setEnableSync(bool newValue) async {
-    final SharedPreferences prefs = await _prefs;
-    await prefs.setBool(_syncKey, newValue);
-  }
-
-  Future<bool> get useDarkMode async =>
-      await _prefs.then((SharedPreferences prefs) =>
-          prefs.getBool(_syncKey) ?? _defaultUseDarkModeValue);
-
-  Future<void> setUseDarkMode(bool newValue) async {
-    final SharedPreferences prefs = await _prefs;
-    await prefs.setBool(_darkModeKey, newValue);
-  }
-
   Future<void> clearAuth() async {
     await _secureStorage.deleteAll();
+    _prefs.then((prefs) {
+      prefs.remove(_usernameKey);
+      prefs.remove(_useridKey);
+      prefs.remove(_userKey);
+      prefs.remove(_credentialsKey);
+    });
   }
 
   Future<void> setToken(String token) async {
-    AndroidOptions androidOptions = AndroidOptions();
+    AndroidOptions androidOptions = const AndroidOptions();
     try {
       await _secureStorage.write(key: _tokenKey, value: token);
     } catch (_) {
@@ -80,33 +64,27 @@ class PreferenceRepo {
     }
   }
 
+  Future<void> setPrivateKey(String privkey) async {
+    AndroidOptions androidOptions = const AndroidOptions();
+    await _secureStorage.write(
+      key: _privkeyKey,
+      value: CryptoService.base64ToUTF8(privkey),
+      aOptions: androidOptions,
+    );
+  }
+
+  void setCredentials(Credentials creds) =>
+      _prefs.then((prefs) => prefs.setString(_credentialsKey, creds.toJson()));
+
   Future<void> setAuth(
       {required DiscryptorUser user,
-      required String username,
-      required String password,
-      required String pubkey,
-      required String privkey,
-      required String signkey,
       required String token,
       required String refreshToken}) async {
     _prefs.then((prefs) => prefs.setString(_userKey, user.toJson()));
-    AndroidOptions androidOptions = AndroidOptions();
+    _prefs.then((prefs) => prefs.setString(_usernameKey, user.username));
+    _prefs.then((prefs) => prefs.setInt(_useridKey, user.id));
+    AndroidOptions androidOptions = const AndroidOptions();
     try {
-      await _secureStorage.write(
-        key: _usernameKey,
-        value: username,
-        aOptions: androidOptions,
-      );
-      await _secureStorage.write(
-        key: _passwordKey,
-        value: password,
-        aOptions: androidOptions,
-      );
-      await _secureStorage.write(
-        key: _privkeyKey,
-        value: privkey,
-        aOptions: androidOptions,
-      );
       await _secureStorage.write(
         key: _tokenKey,
         value: token,
@@ -115,12 +93,6 @@ class PreferenceRepo {
       await _secureStorage.write(
         key: _refreshTokenKey,
         value: refreshToken,
-        aOptions: androidOptions,
-      );
-      await _prefs.then((sp) => sp.setString(_pubkeyKey, pubkey));
-      await _secureStorage.write(
-        key: _signkeyKey,
-        value: signkey,
         aOptions: androidOptions,
       );
     } catch (_) {
