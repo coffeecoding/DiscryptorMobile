@@ -240,6 +240,20 @@ class ApiRepo {
     }
   }
 
+  Future<ApiResponse<UserPubSearchResult>> publicSearchUser(
+      String username, String discriminator) async {
+    try {
+      final uri =
+          '/api/user/pubsearch?username=$username&discriminator=$discriminator';
+      final re = await _net.get(uri);
+      final res = UserPubSearchResult.fromJson(re.body);
+      return ApiResponse(re.statusCode, re.reasonPhrase, res, re.isSuccess());
+    } catch (e) {
+      print('Error getting public user data: $e');
+      return ApiResponse(300, 'Unexpected error', null, false);
+    }
+  }
+
   Future<ApiResponse<AuthResult>> templatefn() async {
     try {
       final uri = '/api/';

@@ -6,6 +6,7 @@ export 'credentials.dart';
 export 'discryptor_message.dart';
 export 'discryptor_user.dart';
 export 'discryptor_user_with_relationship.dart';
-export 'userAndMessageData.dart';
 export 'relationship.dart';
 export 'key_wrapper.dart';
+export 'user_pub_search_result.dart';
+export 'user_and_message_data.dart';

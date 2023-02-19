@@ -41,7 +41,7 @@ class AuthRepo {
 
   Future<ApiResponse<AuthResult>> authenticate(AuthPayload authPayload) async {
     try {
-      Response re = await _net.post('/api/auth', json.encode(authPayload));
+      Response re = await _net.post('/api/auth', authPayload.toJson());
       if (!re.isSuccess()) {
         print('auth failed: ${re.reasonPhrase}');
         return ApiResponse(re.statusCode, re.reasonPhrase, null, false);
@@ -107,6 +107,41 @@ class AuthRepo {
       return ApiResponse(re.statusCode, re.reasonPhrase, res, re.isSuccess());
     } catch (e) {
       print('Error getting pubkey of $userId: $e');
+      return ApiResponse(300, 'Unexpected error', null, false);
+    }
+  }
+
+  Future<ApiResponse<bool>> register(Credentials creds) async {
+    try {
+      const uri = '/api/register';
+      final re = await _net.post(uri, creds.toJson());
+      if (re.statusCode == 401) {
+        bool success = await refreshAuth();
+        if (success) return register(creds);
+        return ApiResponse(re.statusCode, 'Re-authenticate', null, false);
+      }
+      final res = re.body.toLowerCase() == 'true' ? true : false;
+      return ApiResponse(
+          re.statusCode, re.reasonPhrase, res, re.isSuccess() && res);
+    } catch (e) {
+      print('Error getting credentials: $e');
+      return ApiResponse(300, 'Unexpected error', null, false);
+    }
+  }
+
+  Future<ApiResponse<Credentials>> getCredentials() async {
+    try {
+      const uri = '/api/creds';
+      final re = await _net.get(uri);
+      if (re.statusCode == 401) {
+        bool success = await refreshAuth();
+        if (success) return getCredentials();
+        return ApiResponse(re.statusCode, 'Re-authenticate', null, false);
+      }
+      final res = Credentials.fromJson(re.body);
+      return ApiResponse(re.statusCode, re.reasonPhrase, res, re.isSuccess());
+    } catch (e) {
+      print('Error getting credentials: $e');
       return ApiResponse(300, 'Unexpected error', null, false);
     }
   }
