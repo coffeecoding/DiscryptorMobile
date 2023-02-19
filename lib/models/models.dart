@@ -7,3 +7,5 @@ export 'discryptor_message.dart';
 export 'discryptor_user.dart';
 export 'discryptor_user_with_relationship.dart';
 export 'userAndMessageData.dart';
+export 'relationship.dart';
+export 'key_wrapper.dart';

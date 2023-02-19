@@ -100,6 +100,18 @@ class AuthRepo {
     }
   }
 
+  Future<ApiResponse<String>> getPublicKey(int userId) async {
+    try {
+      final uri = '/api/user/$userId/pubkey';
+      final re = await _net.get(uri);
+      final res = re.body;
+      return ApiResponse(re.statusCode, re.reasonPhrase, res, re.isSuccess());
+    } catch (e) {
+      print('Error getting pubkey of $userId: $e');
+      return ApiResponse(300, 'Unexpected error', null, false);
+    }
+  }
+
   Future<bool> refreshAuth() async {
     try {
       String? refreshToken = await _prefsRepo.refreshToken;
