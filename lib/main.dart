@@ -27,6 +27,17 @@ class DiscryptorApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: <BlocProvider<dynamic>>[
+        BlocProvider<InviteCubit>(
+            lazy: false,
+            create: (context) => InviteCubit(locator.get<ApiRepo>())),
+        BlocProvider<ChallengeCubit>(
+            lazy: false,
+            create: (context) => ChallengeCubit(locator.get<AuthRepo>())),
+        BlocProvider<NameCubit>(
+          lazy: false,
+          create: (context) =>
+              NameCubit(locator.get<ApiRepo>(), locator.get<PreferenceRepo>()),
+        ),
         BlocProvider<SelectedChatCubit>(
             lazy: false, create: ((context) => SelectedChatCubit())),
         BlocProvider<ChatListCubit>(
@@ -37,7 +48,7 @@ class DiscryptorApp extends StatelessWidget {
         BlocProvider<AuthCubit>(
             lazy: false,
             create: (context) => AuthCubit(locator.get<PreferenceRepo>(),
-                locator.get<AuthRepo>(), locator.get<ChallengeCubit>())),
+                locator.get<AuthRepo>(), context.read<ChallengeCubit>())),
         BlocProvider<AppCubit>(
           lazy: false,
           create: (context) => AppCubit(context.read<ChatListCubit>()),
@@ -45,7 +56,10 @@ class DiscryptorApp extends StatelessWidget {
         BlocProvider<LoginCubit>(
             lazy: false,
             create: (context) => LoginCubit(
-                context.read<AuthCubit>(), context.read<AppCubit>())),
+                context.read<AuthCubit>(),
+                context.read<AppCubit>(),
+                locator.get<AuthRepo>(),
+                locator.get<PreferenceRepo>())),
       ],
       child: MaterialApp(
         title: 'Discryptor',

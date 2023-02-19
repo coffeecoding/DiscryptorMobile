@@ -254,20 +254,14 @@ class ApiRepo {
     }
   }
 
-  Future<ApiResponse<AuthResult>> templatefn() async {
+  Future<String?> getInviteLink() async {
     try {
-      final uri = '/api/';
+      const uri = '/api/server/invite';
       final re = await _net.get(uri);
-      if (re.statusCode == 401) {
-        bool success = await _auth.refreshAuth();
-        if (success) return templatefn();
-        return ApiResponse(re.statusCode, 'Re-authenticate', null, false);
-      }
-      //final res = CLASS.fromJson(re.body);
-      return ApiResponse(re.statusCode, re.reasonPhrase, null, re.isSuccess());
+      return re.body;
     } catch (e) {
-      print('Error doing X: $e');
-      return ApiResponse(300, 'Unexpected error', null, false);
+      print('Error getting invite link: $e');
+      return null;
     }
   }
 }

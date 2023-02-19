@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:discryptor/models/discryptor_user.dart';
 import 'package:discryptor/services/crypto_service.dart';
+import 'package:discryptor/utils/crypto/crypto.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -68,7 +71,26 @@ class PreferenceRepo {
     }
   }
 
-  Future<void> setPrivateKey(String privkey) async {
+  Future<bool> decryptAndSavePrivateKey(String pw, String encryptedKey) async {
+    try {
+      String? salt = await _prefs.then((prefs) => prefs.getString(_pwsalt));
+      if (salt == null) {
+        print('Cannot decrypt key: salt not found');
+        return false;
+      }
+      String decryptedPrivateKeyBase64 =
+          await RFC2898Helper.decryptWithDerivedKey(pw, salt, encryptedKey);
+      List<int> privKeyBytes = base64.decode(decryptedPrivateKeyBase64);
+      String privKeyUtf8 = utf8.decode(privKeyBytes, allowMalformed: false);
+      await _setPrivateKey(privKeyUtf8);
+      return true;
+    } catch (e) {
+      print('Failed to decrypt password: $e');
+      return false;
+    }
+  }
+
+  Future<void> _setPrivateKey(String privkey) async {
     AndroidOptions androidOptions = const AndroidOptions();
     await _secureStorage.write(
       key: _privkeyKey,

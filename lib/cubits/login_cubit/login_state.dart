@@ -5,7 +5,6 @@ enum LoginStatus { initial, busy, error, loggedIn }
 class LoginState extends Equatable {
   const LoginState(
       {this.status = LoginStatus.initial,
-      this.username = '',
       this.password = '',
       this.message = ''});
 
@@ -16,15 +15,13 @@ class LoginState extends Equatable {
           String? message}) =>
       LoginState(
           status: status ?? this.status,
-          username: username ?? this.username,
           password: password ?? this.password,
           message: message ?? this.message);
 
   final LoginStatus status;
-  final String username;
   final String password;
   final String message;
 
   @override
-  List<Object> get props => [status, username, password, message];
+  List<Object> get props => [status, password, message];
 }

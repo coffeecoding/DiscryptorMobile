@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:discryptor/cubits/cubits.dart';
 import 'package:discryptor/models/models.dart';
 import 'package:discryptor/repos/repos.dart';
-import 'package:discryptor/services/network_service.dart';
 import 'package:equatable/equatable.dart';
 
 part 'auth_state.dart';

@@ -37,7 +37,7 @@ class UserPubSearchResult extends Equatable {
 
   factory UserPubSearchResult.fromMap(Map<String, dynamic> map) {
     return UserPubSearchResult(
-      result: map['result'] as UserPubSearchResultState,
+      result: UserPubSearchResultState.values[map['result']],
       passwordSalt: map['passwordSalt'] as String,
       userId: map['userId'] as int,
     );
