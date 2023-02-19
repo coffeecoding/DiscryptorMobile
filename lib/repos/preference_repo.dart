@@ -14,6 +14,8 @@ class PreferenceRepo {
   static const String _usernameKey = 'username';
   static const String _useridKey = 'userid';
   static const String _privkeyKey = 'privkey';
+  static const String _pwsalt = 'pwsalt';
+  static const String _fullname = 'fullname';
 
   static const String _credentialsKey = 'credskey';
 
@@ -45,6 +47,8 @@ class PreferenceRepo {
       prefs.remove(_useridKey);
       prefs.remove(_userKey);
       prefs.remove(_credentialsKey);
+      prefs.remove(_pwsalt);
+      prefs.remove(_fullname);
     });
   }
 
@@ -75,6 +79,12 @@ class PreferenceRepo {
 
   void setCredentials(Credentials creds) =>
       _prefs.then((prefs) => prefs.setString(_credentialsKey, creds.toJson()));
+
+  void setPublicUserData(String fullname, String pwSalt, int userId) {
+    _prefs.then((prefs) => prefs.setInt(_useridKey, userId));
+    _prefs.then((prefs) => prefs.setString(_pwsalt, pwSalt));
+    _prefs.then((prefs) => prefs.setString(_fullname, fullname));
+  }
 
   Future<void> setAuth(
       {required DiscryptorUser user,

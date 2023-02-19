@@ -4,3 +4,4 @@ export 'auth/auth_cubit.dart';
 export 'chat_list/chat_list_cubit.dart';
 export 'challenge/challenge_cubit.dart';
 export 'app/app_cubit.dart';
+export 'name_cubit/name_cubit.dart';
