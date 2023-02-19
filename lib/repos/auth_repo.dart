@@ -48,7 +48,7 @@ class AuthRepo {
       }
       AuthResult result = AuthResult.fromJson(re.body);
 
-      _net.setAuthHeader(result.token);
+      _net.setToken(result.token);
       _prefsRepo.setAuth(
           user: result.user,
           token: result.token,
@@ -68,7 +68,7 @@ class AuthRepo {
         print('Init auth failed: token was null');
         return null;
       }
-      _net.setAuthHeader(token);
+      _net.setToken(token);
       bool hasValidToken = await _validateOrRenewToken();
       if (!hasValidToken) {
         // reauthentication needed!
@@ -151,14 +151,14 @@ class AuthRepo {
       String? refreshToken = await _prefsRepo.refreshToken;
       if (refreshToken == null) return false;
       // temporarily set auth token to refresh token to get a new normal auth token
-      _net.setAuthHeader(refreshToken);
+      _net.setToken(refreshToken);
       Response re = await _net.get('/api/auth/refresh');
       if (!re.isSuccess()) {
         print('Auth refresh failed: ${re.reasonPhrase}');
         return false;
       }
       String newToken = re.body;
-      _net.setAuthHeader(newToken);
+      _net.setToken(newToken);
       _prefsRepo.setToken(newToken);
       return true;
     } catch (e) {

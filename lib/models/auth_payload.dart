@@ -10,7 +10,7 @@ class AuthPayload extends Equatable {
   const AuthPayload({
     required this.userId,
     required this.challengeToken,
-    required this.overrideCreds,
+    this.overrideCreds = false,
   });
 
   AuthPayload copyWith({

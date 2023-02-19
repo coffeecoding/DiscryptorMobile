@@ -1,6 +1,6 @@
 import 'package:discryptor/config/custom_router.dart';
 import 'package:discryptor/config/locator.dart';
-import 'package:discryptor/repos/preference_repo.dart';
+import 'package:discryptor/repos/repos.dart';
 import 'package:discryptor/views/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -36,10 +36,16 @@ class DiscryptorApp extends StatelessWidget {
         ),
         BlocProvider<AuthCubit>(
             lazy: false,
-            create: (context) => AuthCubit(locator.get<PreferenceRepo>(), locator.get<NetworkService>(), context.read<ChatListCubit>())),
+            create: (context) => AuthCubit(locator.get<PreferenceRepo>(),
+                locator.get<AuthRepo>(), locator.get<ChallengeCubit>())),
+        BlocProvider<AppCubit>(
+          lazy: false,
+          create: (context) => AppCubit(context.read<ChatListCubit>()),
+        ),
         BlocProvider<LoginCubit>(
             lazy: false,
-            create: (context) => LoginCubit(context.read<AuthCubit>())),
+            create: (context) => LoginCubit(
+                context.read<AuthCubit>(), context.read<AppCubit>())),
       ],
       child: MaterialApp(
         title: 'Discryptor',

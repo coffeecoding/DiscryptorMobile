@@ -1,4 +1,4 @@
-import 'package:discryptor/models/userAndMessageData.dart';
+import 'package:discryptor/models/user_and_message_data.dart';
 
 void main() {
   print("Json-decoding user and message data ...");

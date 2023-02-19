@@ -1,17 +1,19 @@
 part of 'auth_cubit.dart';
 
 // this is referring to auth state with *Discord*.
-enum AuthStatus { authenticated, unauthenticated, autherror }
+enum AuthStatus { authenticating, authenticated, unauthenticated, autherror }
 
 class AuthState extends Equatable {
   const AuthState(
       {this.status = AuthStatus.unauthenticated, this.user, this.error = ''});
 
-  factory AuthState.unauthenticated() => const AuthState();
+  factory AuthState.unauthenticated({String? error}) =>
+      AuthState(error: error ?? '');
 
   AuthState copyWith({
     AuthStatus? status,
     DiscryptorUser? user,
+    String? challengeToken,
     String? error,
   }) =>
       AuthState(

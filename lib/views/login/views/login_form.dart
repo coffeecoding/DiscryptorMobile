@@ -1,4 +1,5 @@
 import 'package:discryptor/cubits/login_cubit/login_cubit.dart';
+import 'package:discryptor/main.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/material.dart';
@@ -29,9 +30,8 @@ class LoginForm extends StatelessWidget {
                   height: 40, child: CircularProgressIndicator());
             default:
               return ElevatedButton(
-                  onPressed: () => context
-                      .read<LoginCubit>()
-                      .login(usernameController.text, passwordController.text),
+                  onPressed: () =>
+                      DiscryptorApp.navigatorKey.currentState!.push(""),
                   child: const SizedBox(
                       width: double.infinity,
                       height: 40,

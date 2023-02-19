@@ -1,38 +1,54 @@
 import 'package:bloc/bloc.dart';
-import 'package:discryptor/cubits/chat_list/chat_list_cubit.dart';
-import 'package:discryptor/models/auth_result.dart';
-import 'package:discryptor/models/discryptor_user.dart';
-import 'package:discryptor/repos/preference_repo.dart';
+import 'package:discryptor/cubits/cubits.dart';
+import 'package:discryptor/models/models.dart';
+import 'package:discryptor/repos/repos.dart';
 import 'package:discryptor/services/network_service.dart';
 import 'package:equatable/equatable.dart';
 
 part 'auth_state.dart';
 
 class AuthCubit extends Cubit<AuthState> {
-  AuthCubit(this.prefsRepo, this.networkService, this.chatListCubit)
+  AuthCubit(this.prefsRepo, this.authRepo, this.challengeCubit)
       : super(const AuthState());
 
-  final ChatListCubit chatListCubit;
-  final NetworkService networkService;
   final PreferenceRepo prefsRepo;
+  final AuthRepo authRepo;
+  final ChallengeCubit challengeCubit;
 
-  Future<void> tryResumeAuth() async {
+  Future<void> resumeAuth() async {
     try {
-      String? token = await prefsRepo.token;
+      emit(const AuthState(status: AuthStatus.authenticating));
+      final user = await authRepo.initAuth();
+      if (user == null) {
+        emit(AuthState.unauthenticated());
+        return;
+      }
+      emit(AuthState(status: AuthStatus.authenticated, user: user));
     } catch (e) {
-      //
+      print('Init auth failed: $e');
+      // do nothing: We will stay unauthenticated for now
+      emit(AuthState(status: AuthStatus.autherror, error: '$e'));
     }
   }
 
-  Future<void> onAuthenticated(AuthResult authResult) async {
-    chatListCubit.loadChats();
-    networkService.setAuthHeader(authResult.token);
-    emit(state.copyWith(
-        status: AuthStatus.authenticated, user: authResult.user));
+  Future<void> authenticate() async {
+    try {
+      String? challenge = challengeCubit.state.challenge;
+      if (challenge == null) return;
+      int? userId = await prefsRepo.userId;
+      if (userId == null) return; // should never happen
+      emit(state.copyWith(status: AuthStatus.authenticating));
+      AuthPayload p = AuthPayload(userId: userId, challengeToken: challenge);
+      ApiResponse<AuthResult> authResult = await authRepo.authenticate(p);
+      emit(state.copyWith(
+          status: AuthStatus.authenticated, user: authResult.content!.user));
+    } catch (e) {
+      emit(AuthState.unauthenticated(error: '$e'));
+    }
   }
 
   void logout() {
+    // todo: stop websocket, delete tokens etc
     emit(AuthState.unauthenticated());
-    // todo: stop websocket etc
   }
 }

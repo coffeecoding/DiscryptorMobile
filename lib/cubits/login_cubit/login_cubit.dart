@@ -1,14 +1,15 @@
 import 'package:bloc/bloc.dart';
-import 'package:discryptor/cubits/auth/auth_cubit.dart';
+import 'package:discryptor/cubits/cubits.dart';
 import 'package:discryptor/models/auth_result.dart';
 import 'package:equatable/equatable.dart';
 
 part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
-  LoginCubit(this.authCubit) : super(const LoginState());
+  LoginCubit(this.authCubit, this.appCubit) : super(const LoginState());
 
   final AuthCubit authCubit;
+  final AppCubit appCubit;
 
   void usernameChanged(String username) {
     emit(state.copyWith(username: username));
@@ -27,8 +28,7 @@ class LoginCubit extends Cubit<LoginState> {
       // Todo: Test with actually valid json result from desktop client
       AuthResult authResult = AuthResult.fromJson('dummy json');
       emit(state.copyWith(status: LoginStatus.loggedIn));
-      // load rest of data
-      authCubit.onAuthenticated(authResult);
+      appCubit.retrieveData();
     } catch (e) {
       emit(state.copyWith(status: LoginStatus.error, message: '$e'));
     }

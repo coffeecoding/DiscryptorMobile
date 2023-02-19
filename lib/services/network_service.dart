@@ -23,7 +23,7 @@ class NetworkService {
   final http.Client _client;
   final Map<String, String> _defaultHeaders;
 
-  void setAuthHeader(String authToken) {
+  void setToken(String authToken) {
     _defaultHeaders['Authorization'] = authToken;
   }
 
