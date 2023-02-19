@@ -38,13 +38,24 @@ class PasswordScreen extends StatelessWidget {
                         child: SingleChildScrollView(
                             child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            Text(
-                              'Enter password for ${context.read<NameCubit>().state.fullname}',
-                            ),
-                            const SizedBox(height: 32),
                             TextField(
+                                controller: TextEditingController(
+                                    text: context
+                                        .read<NameCubit>()
+                                        .state
+                                        .fullname),
+                                enabled: false,
+                                style: TextStyle(color: Colors.white60),
+                                onChanged: (val) => {},
+                                decoration: const InputDecoration(
+                                    labelText: 'Username#0000')),
+                            const SizedBox(height: 16),
+                            TextField(
+                                obscureText: true,
                                 controller: passwordCtr,
+                                autofocus: true,
                                 onChanged: (val) => context
                                     .read<LoginCubit>()
                                     .passwordChanged(val),
