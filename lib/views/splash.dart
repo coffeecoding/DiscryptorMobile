@@ -18,6 +18,6 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // Todo: read auth state from storage
     bool authenticated = 1 + 2 == 5;
-    return authenticated ? const HomeScreen() : const LoginScreen();
+    return authenticated ? const HomeScreen() : LoginScreen();
   }
 }
