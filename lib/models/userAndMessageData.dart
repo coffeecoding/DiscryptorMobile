@@ -2,8 +2,6 @@
 import 'dart:convert';
 
 import 'package:discryptor/models/common/json_serializable.dart';
-import 'package:flutter/foundation.dart';
-
 import 'package:discryptor/models/discryptor_message.dart';
 import 'package:discryptor/models/discryptor_user_with_relationship.dart';
 
@@ -41,13 +39,13 @@ class UserAndMessageData extends JsonSerializable {
   factory UserAndMessageData.fromMap(Map<String, dynamic> map) {
     return UserAndMessageData(
       users: List<DiscryptorUserWithRelationship>.from(
-        (map['users'] as List<int>).map<DiscryptorUserWithRelationship>(
+        (map['users'] as List).map<DiscryptorUserWithRelationship>(
           (x) =>
               DiscryptorUserWithRelationship.fromMap(x as Map<String, dynamic>),
         ),
       ),
       messages: List<DiscryptorMessage>.from(
-        (map['messages'] as List<int>).map<DiscryptorMessage>(
+        (map['messages'] as List).map<DiscryptorMessage>(
           (x) => DiscryptorMessage.fromMap(x as Map<String, dynamic>),
         ),
       ),
@@ -61,15 +59,4 @@ class UserAndMessageData extends JsonSerializable {
 
   @override
   String toString() => 'UserAndMessageData(users: $users, messages: $messages)';
-
-  @override
-  bool operator ==(covariant UserAndMessageData other) {
-    if (identical(this, other)) return true;
-
-    return listEquals(other.users, users) &&
-        listEquals(other.messages, messages);
-  }
-
-  @override
-  int get hashCode => users.hashCode ^ messages.hashCode;
 }
