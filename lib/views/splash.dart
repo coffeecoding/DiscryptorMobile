@@ -1,5 +1,5 @@
 import 'package:discryptor/views/home.dart';
-import 'package:discryptor/views/login/login.dart';
+import 'package:discryptor/views/start/start.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -18,6 +18,6 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // Todo: read auth state from storage
     bool authenticated = 1 + 2 == 5;
-    return authenticated ? const HomeScreen() : LoginScreen();
+    return authenticated ? const HomeScreen() : StartScreen();
   }
 }

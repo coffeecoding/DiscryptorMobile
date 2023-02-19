@@ -7,7 +7,7 @@ class NameState extends Equatable {
   const NameState(
       {this.status = NameStatus.initial,
       this.result,
-      this.fullname = '',
+      this.fullname = 'YSCodes#7098',
       this.message = ''});
 
   NameState copyWith({

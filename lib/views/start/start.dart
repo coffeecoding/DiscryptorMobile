@@ -1,5 +1,3 @@
-import 'package:discryptor/main.dart';
-import 'package:discryptor/views/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:discryptor/cubits/cubits.dart';
@@ -7,22 +5,24 @@ import 'package:discryptor/models/user_pub_search_result.dart';
 import 'package:discryptor/views/dialog/custom_dialog.dart';
 import 'package:discryptor/views/dialog/server_invite.dart';
 
-class LoginScreen extends StatelessWidget {
-  LoginScreen({super.key});
+import 'package:discryptor/views/start/common/logo.dart';
 
-  static const String routeName = '/login';
+class StartScreen extends StatelessWidget {
+  const StartScreen({super.key});
+
+  static const String routeName = '/start';
 
   static Route<dynamic> route() {
-    return MaterialPageRoute<LoginScreen>(
+    return MaterialPageRoute<StartScreen>(
       settings: const RouteSettings(name: routeName),
-      builder: (BuildContext context) => LoginScreen(),
+      builder: (BuildContext context) => const StartScreen(),
     );
   }
 
-  final TextEditingController usernameController = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
+    final TextEditingController usernameController =
+        TextEditingController(text: context.read<NameCubit>().state.fullname);
     return BlocConsumer<NameCubit, NameState>(
         listener: (context, state) async {
           if (state.result!.result == UserPubSearchResultState.notFound) {
@@ -35,17 +35,9 @@ class LoginScreen extends StatelessWidget {
         builder: (context, state) => Material(
                 child: SafeArea(
               child: Column(children: [
-                const Expanded(
-                    flex: 1,
-                    child: Center(
-                      child: Text(
-                        'D15CRYPT0R',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 28),
-                      ),
-                    )),
+                const Expanded(flex: 2, child: Center(child: Logo())),
                 Expanded(
-                    flex: 4,
+                    flex: 3,
                     child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 32.0),
                         child: Center(
