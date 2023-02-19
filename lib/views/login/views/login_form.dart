@@ -19,22 +19,9 @@ class LoginForm extends StatelessWidget {
       children: [
         TextField(
             controller: usernameController,
-            onChanged: (username) => {},
-            decoration: InputDecoration(labelText: 'Username#0000')),
-        const SizedBox(height: 16),
-        TextField(
-            controller: passwordController,
-            onChanged: (username) => {},
-            decoration: const InputDecoration(labelText: 'Password')),
-        BlocBuilder<LoginCubit, LoginState>(builder: (context, state) {
-          if (state.status == LoginStatus.error) {
-            return Text(state.message,
-                style: const TextStyle(color: Colors.red));
-          } else {
-            return Container();
-          }
-        }),
-        const SizedBox(height: 16),
+            onChanged: (val) => context.read<LoginCubit>().usernameChanged(val),
+            decoration: const InputDecoration(labelText: 'Username#0000')),
+        const SizedBox(height: 32),
         BlocBuilder<LoginCubit, LoginState>(builder: (context, state) {
           switch (state.status) {
             case LoginStatus.busy:
@@ -48,7 +35,7 @@ class LoginForm extends StatelessWidget {
                   child: const SizedBox(
                       width: double.infinity,
                       height: 40,
-                      child: Center(child: Text('Login'))));
+                      child: Center(child: Text('Continue'))));
           }
         }),
         const SizedBox(height: 64),

@@ -1,9 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-import 'package:discryptor/models/common/json_serializable.dart';
+import 'package:equatable/equatable.dart';
 
-class ChatMessage extends JsonSerializable {
+class ChatMessage extends Equatable {
   String iv;
   String message;
   ChatMessage({
@@ -13,9 +13,6 @@ class ChatMessage extends JsonSerializable {
 
   @override
   List<Object?> get props => [iv, message];
-
-  @override
-  CustomType get customType => CustomType.chatMessage;
 
   ChatMessage clone() => ChatMessage(iv: iv, message: message);
 

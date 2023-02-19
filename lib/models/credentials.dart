@@ -1,9 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-import 'package:discryptor/models/common/json_serializable.dart';
+import 'package:equatable/equatable.dart';
 
-class Credentials extends JsonSerializable {
+class Credentials extends Equatable {
   final int userId;
   final String publicKey;
   final String privateKeyEncrypted;
@@ -17,9 +17,6 @@ class Credentials extends JsonSerializable {
 
   @override
   List<Object?> get props => [userId, publicKey, privateKeyEncrypted, created];
-
-  @override
-  CustomType get customType => CustomType.credentials;
 
   Credentials copyWith({
     int? userId,

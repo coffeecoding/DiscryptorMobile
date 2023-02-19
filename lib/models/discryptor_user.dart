@@ -1,9 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-import 'package:discryptor/models/common/json_serializable.dart';
+import 'package:equatable/equatable.dart';
 
-class DiscryptorUser extends JsonSerializable {
+class DiscryptorUser extends Equatable {
   final int id;
   final int createdAt;
   final int guildId;
@@ -34,9 +34,6 @@ class DiscryptorUser extends JsonSerializable {
         isBot,
         isWebhook
       ];
-
-  @override
-  CustomType get customType => CustomType.discryptorUser;
 
   String get usedAvatarUrl => avatarUrl.isEmpty ? defaultAvatarUrl : avatarUrl;
   String get fullname => '$username#$discriminator';

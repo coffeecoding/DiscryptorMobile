@@ -1,11 +1,11 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-import 'package:discryptor/models/common/json_serializable.dart';
 import 'package:discryptor/models/discryptor_message.dart';
 import 'package:discryptor/models/discryptor_user_with_relationship.dart';
+import 'package:equatable/equatable.dart';
 
-class UserAndMessageData extends JsonSerializable {
+class UserAndMessageData extends Equatable {
   final List<DiscryptorUserWithRelationship> users;
   final List<DiscryptorMessage> messages;
   const UserAndMessageData({
@@ -15,9 +15,6 @@ class UserAndMessageData extends JsonSerializable {
 
   @override
   List<Object?> get props => [users, messages];
-
-  @override
-  CustomType get customType => CustomType.userAndMessageData;
 
   UserAndMessageData copyWith({
     List<DiscryptorUserWithRelationship>? users,

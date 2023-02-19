@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:discryptor/config/locator.dart';
-import 'package:discryptor/models/common/json_serializable.dart';
 import 'package:discryptor/repos/preference_repo.dart';
 import 'package:discryptor/services/network_service.dart';
 import 'package:http/http.dart';
