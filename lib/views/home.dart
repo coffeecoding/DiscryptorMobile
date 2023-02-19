@@ -4,7 +4,7 @@ import 'package:discryptor/cubits/cubits.dart';
 import 'package:discryptor/cubitvms/chat_vm.dart';
 import 'package:discryptor/main.dart';
 import 'package:discryptor/views/chat/chat.dart';
-import 'package:discryptor/views/start/login.dart';
+import 'package:discryptor/views/start/password.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

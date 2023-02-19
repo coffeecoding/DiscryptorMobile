@@ -1,3 +1,5 @@
+import 'package:discryptor/main.dart';
+import 'package:discryptor/views/start/password.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:discryptor/cubits/cubits.dart';
@@ -28,23 +30,23 @@ class StartScreen extends StatelessWidget {
           if (state.result!.result == UserPubSearchResultState.notFound) {
             final dlg = CustomDialog(child: ServerInviteDialog());
             await showDialog(context: context, builder: (c) => dlg);
+          } else {
+            DiscryptorApp.navigatorKey.currentState!
+                .push(PasswordScreen.route());
           }
-          //DiscryptorApp.navigatorKey.currentState!.push("");
         },
         listenWhen: (context, state) => state.status == NameStatus.success,
         builder: (context, state) => Material(
                 child: SafeArea(
               child: Column(children: [
-                const Expanded(flex: 2, child: Center(child: Logo())),
+                const Expanded(flex: 1, child: Center(child: Logo())),
                 Expanded(
-                    flex: 3,
+                    flex: 2,
                     child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                        child: Center(
-                            child: Center(
-                                child: SingleChildScrollView(
-                                    child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        child: SingleChildScrollView(
+                            child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             TextField(
                                 controller: usernameController,
@@ -73,9 +75,8 @@ class StartScreen extends StatelessWidget {
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     color: Colors.deepOrange.shade700)),
-                            const SizedBox(height: 64),
                           ],
-                        ))))))
+                        )))),
               ]),
             )));
   }

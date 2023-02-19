@@ -1,3 +1,4 @@
+import 'package:discryptor/main.dart';
 import 'package:discryptor/views/start/common/logo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,7 +10,7 @@ import 'package:discryptor/views/dialog/server_invite.dart';
 class PasswordScreen extends StatelessWidget {
   const PasswordScreen({super.key});
 
-  static const String routeName = '/login';
+  static const String routeName = '/password';
 
   static Route<dynamic> route() {
     return MaterialPageRoute<PasswordScreen>(
@@ -20,61 +21,68 @@ class PasswordScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController usernameController =
-        TextEditingController(text: context.read<NameCubit>().state.fullname);
-    return BlocConsumer<NameCubit, NameState>(
+    final TextEditingController passwordCtr = TextEditingController();
+    return BlocConsumer<LoginCubit, LoginState>(
         listener: (context, state) async {
-          if (state.result!.result == UserPubSearchResultState.notFound) {
-            final dlg = CustomDialog(child: ServerInviteDialog());
-            await showDialog(context: context, builder: (c) => dlg);
-          }
           //DiscryptorApp.navigatorKey.currentState!.push("");
         },
-        listenWhen: (context, state) => state.status == NameStatus.success,
+        listenWhen: (context, state) => state.status == LoginStatus.loggedIn,
         builder: (context, state) => Material(
                 child: SafeArea(
               child: Column(children: [
-                const Expanded(flex: 2, child: Center(child: Logo())),
+                const Expanded(flex: 1, child: Center(child: Logo())),
                 Expanded(
-                    flex: 3,
+                    flex: 2,
                     child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                        child: Center(
-                            child: Center(
-                                child: SingleChildScrollView(
-                                    child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        child: SingleChildScrollView(
+                            child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            TextField(
-                                controller: usernameController,
-                                onChanged: (val) =>
-                                    context.read<NameCubit>().nameChanged(val),
-                                decoration: const InputDecoration(
-                                    labelText: 'Username#0000')),
+                            Text(
+                              'Enter password for ${context.read<NameCubit>().state.fullname}',
+                            ),
                             const SizedBox(height: 32),
-                            state.status == NameStatus.busy
+                            TextField(
+                                controller: passwordCtr,
+                                onChanged: (val) => context
+                                    .read<LoginCubit>()
+                                    .passwordChanged(val),
+                                decoration: const InputDecoration(
+                                    labelText: 'Password')),
+                            const SizedBox(height: 32),
+                            state.status == LoginStatus.busy
                                 ? const SizedBox(
                                     height: 32,
                                     width: 32,
                                     child: CircularProgressIndicator())
                                 : ElevatedButton(
-                                    onPressed: () => context
-                                        .read<NameCubit>()
-                                        .getUserAndContinue(),
+                                    onPressed: () =>
+                                        context.read<LoginCubit>().login(),
                                     child: const SizedBox(
                                         width: double.infinity,
                                         height: 40,
-                                        child:
-                                            Center(child: Text('Continue')))),
+                                        child: Center(child: Text('Unlock')))),
+                            ElevatedButton(
+                                onPressed: () => DiscryptorApp
+                                    .navigatorKey.currentState!
+                                    .pop(),
+                                style: ButtonStyle(
+                                    backgroundColor: MaterialStatePropertyAll(
+                                        Theme.of(context)
+                                            .secondaryHeaderColor)),
+                                child: const SizedBox(
+                                    width: double.infinity,
+                                    height: 40,
+                                    child: Center(child: Text('Back')))),
                             const SizedBox(height: 32),
                             Text(state.message,
                                 softWrap: true,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     color: Colors.deepOrange.shade700)),
-                            const SizedBox(height: 64),
                           ],
-                        ))))))
+                        )))),
               ]),
             )));
   }
