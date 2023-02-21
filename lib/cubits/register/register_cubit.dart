@@ -47,6 +47,8 @@ class RegisterCubit extends Cubit<RegisterState> {
         emit(state.copyWith(status: RegisterStatus.error, error: re.message));
         return;
       }
+      await prefRepo.decryptAndSavePrivateKey(
+          state.password, newCreds.privateKeyEncrypted);
       emit(state.copyWith(status: RegisterStatus.success, error: ''));
     } catch (e) {
       emit(state.copyWith(status: RegisterStatus.error, error: '$e'));
