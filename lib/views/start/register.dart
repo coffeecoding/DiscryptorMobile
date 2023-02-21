@@ -1,4 +1,5 @@
 import 'package:discryptor/main.dart';
+import 'package:discryptor/views/home.dart';
 import 'package:discryptor/views/start/common/logo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,11 +20,11 @@ class RegisterScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final TextEditingController passwordCtr = TextEditingController();
-    return BlocConsumer<LoginCubit, LoginState>(
-        listener: (context, state) async {
-          //DiscryptorApp.navigatorKey.currentState!.push("");
+    return BlocConsumer<RegisterCubit, RegisterState>(
+        listener: (context, state) {
+          DiscryptorApp.navigatorKey.currentState!.push(HomeScreen.route());
         },
-        listenWhen: (context, state) => state.status == LoginStatus.loggedIn,
+        listenWhen: (context, state) => state.status == RegisterStatus.success,
         builder: (context, state) => Material(
                 child: SafeArea(
               child: Column(children: [
@@ -37,40 +38,56 @@ class RegisterScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            TextField(
-                                controller: TextEditingController(
-                                    text: context
-                                        .read<NameCubit>()
-                                        .state
-                                        .fullname),
-                                enabled: false,
-                                style: const TextStyle(color: Colors.white70),
-                                onChanged: (val) => {},
-                                decoration: const InputDecoration(
-                                    labelText: 'Username#0000')),
+                            Text(
+                              "Welcome ${context.read<NameCubit>().state.fullname.split('#')[0]}!",
+                              textAlign: TextAlign.center,
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                            ),
                             const SizedBox(height: 16),
+                            const Text(
+                                'You are one step away from chatting! That last step is to generate your encryption keys by entering a strong password. You only have to do this once.',
+                                textAlign: TextAlign.center),
+                            const SizedBox(height: 16),
+                            const Text(
+                                'Make sure to save your password securely, as we do not store it. It cannot be reset or restored!',
+                                style: TextStyle(color: Colors.amber),
+                                textAlign: TextAlign.center),
+                            const SizedBox(height: 32),
                             TextField(
                                 obscureText: true,
                                 controller: passwordCtr,
                                 autofocus: true,
                                 onChanged: (val) => context
-                                    .read<LoginCubit>()
+                                    .read<RegisterCubit>()
                                     .passwordChanged(val),
                                 decoration: const InputDecoration(
                                     labelText: 'Password')),
+                            TextField(
+                                obscureText: true,
+                                controller: passwordCtr,
+                                autofocus: true,
+                                onChanged: (val) => context
+                                    .read<RegisterCubit>()
+                                    .confirmedPwChanged(val),
+                                decoration: const InputDecoration(
+                                    labelText: 'Confirm Password')),
                             const SizedBox(height: 32),
-                            state.status == LoginStatus.busy
+                            state.status == RegisterStatus.busy
                                 ? const SizedBox(
                                     height: 32,
                                     width: 32,
                                     child: CircularProgressIndicator())
                                 : ElevatedButton(
-                                    onPressed: () =>
-                                        context.read<LoginCubit>().login(),
+                                    onPressed: () => context
+                                        .read<RegisterCubit>()
+                                        .register(),
                                     child: const SizedBox(
                                         width: double.infinity,
                                         height: 40,
-                                        child: Center(child: Text('Unlock')))),
+                                        child: Center(
+                                            child: Text(
+                                                'Generate keys and login')))),
                             ElevatedButton(
                                 onPressed: () => DiscryptorApp
                                     .navigatorKey.currentState!
@@ -84,7 +101,7 @@ class RegisterScreen extends StatelessWidget {
                                     height: 40,
                                     child: Center(child: Text('Back')))),
                             const SizedBox(height: 32),
-                            Text(state.message,
+                            Text(state.error,
                                 softWrap: true,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(

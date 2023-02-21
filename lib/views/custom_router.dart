@@ -3,6 +3,7 @@ import 'package:discryptor/views/home.dart';
 import 'package:discryptor/views/start/auth.dart';
 import 'package:discryptor/views/start/password.dart';
 import 'package:discryptor/views/splash.dart';
+import 'package:discryptor/views/start/register.dart';
 import 'package:discryptor/views/start/start.dart';
 import 'package:flutter/material.dart';
 
@@ -21,6 +22,8 @@ class CustomRouter {
         return ChatScreen.route();
       case AuthScreen.routeName:
         return AuthScreen.route();
+      case RegisterScreen.routeName:
+        return RegisterScreen.route();
       default:
         return _errorRoute();
     }
