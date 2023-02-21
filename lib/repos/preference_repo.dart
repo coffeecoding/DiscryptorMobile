@@ -34,6 +34,7 @@ class PreferenceRepo {
       _prefs.then((prefs) => prefs.getString(_usernameKey));
   Future<int?> get userId async =>
       _prefs.then((prefs) => prefs.getInt(_useridKey));
+  Future<String?> get salt => _prefs.then((prefs) => prefs.getString(_pwsalt));
   Future<String?> get privkey async => _secureStorage.read(key: _privkeyKey);
   Future<String?> get token async => _secureStorage.read(key: _tokenKey);
   Future<String?> get refreshToken async =>
