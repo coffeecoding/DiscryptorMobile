@@ -1,4 +1,5 @@
 import 'package:discryptor/main.dart';
+import 'package:discryptor/views/start/auth.dart';
 import 'package:discryptor/views/start/password.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,8 +32,7 @@ class StartScreen extends StatelessWidget {
             final dlg = CustomDialog(child: ServerInviteDialog());
             await showDialog(context: context, builder: (c) => dlg);
           } else {
-            DiscryptorApp.navigatorKey.currentState!
-                .push(PasswordScreen.route());
+            DiscryptorApp.navigatorKey.currentState!.push(AuthScreen.route());
           }
         },
         listenWhen: (context, state) => state.status == NameStatus.success,

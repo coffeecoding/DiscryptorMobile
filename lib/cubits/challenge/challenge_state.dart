@@ -18,6 +18,8 @@ class ChallengeState extends Equatable {
   final String? challenge;
   final String error;
 
+  String get challengeString => challenge == null ? '' : challenge!;
+
   @override
   List<Object?> get props => [status, challenge, error];
 }

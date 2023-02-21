@@ -13,7 +13,6 @@ class AuthState extends Equatable {
   AuthState copyWith({
     AuthStatus? status,
     DiscryptorUser? user,
-    String? challengeToken,
     String? error,
   }) =>
       AuthState(

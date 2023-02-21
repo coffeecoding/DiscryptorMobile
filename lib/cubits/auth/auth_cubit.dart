@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:bloc/bloc.dart';
 import 'package:discryptor/cubits/cubits.dart';
 import 'package:discryptor/models/models.dart';
@@ -39,6 +41,10 @@ class AuthCubit extends Cubit<AuthState> {
       emit(state.copyWith(status: AuthStatus.authenticating));
       AuthPayload p = AuthPayload(userId: userId, challengeToken: challenge);
       ApiResponse<AuthResult> authResult = await authRepo.authenticate(p);
+      if (!authResult.isSuccess) {
+        emit(AuthState.unauthenticated(error: 'Authentication failed.'));
+        return;
+      }
       emit(state.copyWith(
           status: AuthStatus.authenticated, user: authResult.content!.user));
     } catch (e) {

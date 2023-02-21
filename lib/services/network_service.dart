@@ -18,7 +18,6 @@ class NetworkService {
         };
 
   static const String baseUrl = 'server.discryptor.io';
-  static const int port = 80;
 
   final http.Client _client;
   final Map<String, String> _defaultHeaders;
@@ -28,7 +27,11 @@ class NetworkService {
   }
 
   Uri _createUri(String requestUri) {
-    return Uri(scheme: 'http', host: baseUrl, port: port, path: requestUri);
+    return Uri(scheme: 'http', host: baseUrl, port: 80, path: requestUri);
+  }
+
+  Uri _createUriHttps(String requestUri) {
+    return Uri(scheme: 'https', host: baseUrl, port: 443, path: requestUri);
   }
 
   Future<Response> get(String requestUri) async {
@@ -36,7 +39,7 @@ class NetworkService {
   }
 
   Future<Response> post(String requestUri, String jsonBody) async {
-    return await _client.post(_createUri(requestUri),
+    return await _client.post(_createUriHttps(requestUri),
         body: jsonBody, headers: _defaultHeaders);
   }
 

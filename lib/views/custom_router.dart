@@ -1,5 +1,6 @@
 import 'package:discryptor/views/chat/chat.dart';
 import 'package:discryptor/views/home.dart';
+import 'package:discryptor/views/start/auth.dart';
 import 'package:discryptor/views/start/password.dart';
 import 'package:discryptor/views/splash.dart';
 import 'package:discryptor/views/start/start.dart';
@@ -18,6 +19,8 @@ class CustomRouter {
         return StartScreen.route();
       case ChatScreen.routeName:
         return ChatScreen.route();
+      case AuthScreen.routeName:
+        return AuthScreen.route();
       default:
         return _errorRoute();
     }

@@ -3,9 +3,6 @@ import 'package:discryptor/views/start/common/logo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:discryptor/cubits/cubits.dart';
-import 'package:discryptor/models/user_pub_search_result.dart';
-import 'package:discryptor/views/dialog/custom_dialog.dart';
-import 'package:discryptor/views/dialog/server_invite.dart';
 
 class PasswordScreen extends StatelessWidget {
   const PasswordScreen({super.key});
@@ -47,7 +44,7 @@ class PasswordScreen extends StatelessWidget {
                                         .state
                                         .fullname),
                                 enabled: false,
-                                style: TextStyle(color: Colors.white60),
+                                style: const TextStyle(color: Colors.white70),
                                 onChanged: (val) => {},
                                 decoration: const InputDecoration(
                                     labelText: 'Username#0000')),

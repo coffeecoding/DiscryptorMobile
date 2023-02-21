@@ -54,8 +54,7 @@ class ServerInviteDialog extends StatelessWidget {
                     "It looks like you aren't part of the official Discryptor server yet. To use Discryptor, this is necessary, as the Discryptor Messenger bot can only deliver encrypted messages between members of the same server.",
                     softWrap: true),
                 const SizedBox(height: 16),
-                const Text(
-                    'Use the invite link below or click the button to join',
+                const Text('Use the invite link below to join.',
                     softWrap: true),
                 const SizedBox(height: 16),
                 Row(
