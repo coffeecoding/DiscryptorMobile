@@ -22,6 +22,7 @@ class AuthScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.read<ChallengeCubit>().getChallenge();
     return BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) async {
           //DiscryptorApp.navigatorKey.currentState!.push("");
@@ -94,7 +95,7 @@ class AuthScreen extends StatelessWidget {
                                                     MaterialStatePropertyAll(
                                                         Colors.white)),
                                             child: state.status ==
-                                                    InviteStatus.busy
+                                                    ChallengeStatus.fetching
                                                 ? const SizedBox(
                                                     height: 24,
                                                     width: 24,

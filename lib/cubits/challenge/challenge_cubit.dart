@@ -9,18 +9,16 @@ class ChallengeCubit extends Cubit<ChallengeState> {
 
   final AuthRepo authRepo;
 
-  Future<String?> getChallenge() async {
+  Future<void> getChallenge() async {
     try {
       emit(state.copyWith(status: ChallengeStatus.fetching));
       String? challenge = await authRepo.getChallenge();
       if (challenge == null) {
         emit(state.copyWith(
             status: ChallengeStatus.error, error: 'Something went wrong.'));
-        return null;
       }
       emit(state.copyWith(
           status: ChallengeStatus.success, challenge: challenge));
-      return challenge;
     } catch (e) {
       emit(state.copyWith(status: ChallengeStatus.error));
     }
