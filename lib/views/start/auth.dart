@@ -1,8 +1,8 @@
 import 'package:discryptor/cubits/cubits.dart';
 import 'package:discryptor/main.dart';
+import 'package:discryptor/models/models.dart';
 import 'package:discryptor/views/start/common/logo.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,8 +26,15 @@ class AuthScreen extends StatelessWidget {
     return BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) async {
           //DiscryptorApp.navigatorKey.currentState!.push("");
+          final userStatus = context.read<NameCubit>().state.result!.result;
+          if (userStatus == UserPubSearchResultState.noCredentialsFound) {
+            // handle
+          } else if (userStatus == UserPubSearchResultState.found) {
+            // handle
+          }
         },
-        listenWhen: (context, state) => state.status == LoginStatus.loggedIn,
+        listenWhen: (context, state) =>
+            state.status == AuthStatus.authenticated,
         builder: (context, state) => Material(
                 child: SafeArea(
               child: Column(children: [

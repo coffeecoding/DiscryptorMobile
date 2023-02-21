@@ -6,3 +6,4 @@ export 'challenge/challenge_cubit.dart';
 export 'app/app_cubit.dart';
 export 'name_cubit/name_cubit.dart';
 export 'invite/invite_cubit.dart';
+export 'register/register_cubit.dart';

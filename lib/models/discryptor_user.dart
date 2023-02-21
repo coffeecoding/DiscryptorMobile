@@ -13,31 +13,10 @@ class DiscryptorUser extends Equatable {
   final String discriminator;
   final String avatarUrl;
   final String defaultAvatarUrl;
-  final String bannerUrl;
+  final String? bannerUrl;
   final String publicKey;
   final bool isBot;
   final bool isWebhook;
-
-  @override
-  List<Object?> get props => [
-        id,
-        createdAt,
-        guildId,
-        status,
-        username,
-        accentColor,
-        discriminator,
-        avatarUrl,
-        defaultAvatarUrl,
-        bannerUrl,
-        publicKey,
-        isBot,
-        isWebhook
-      ];
-
-  String get usedAvatarUrl => avatarUrl.isEmpty ? defaultAvatarUrl : avatarUrl;
-  String get fullname => '$username#$discriminator';
-
   const DiscryptorUser({
     required this.id,
     required this.createdAt,
@@ -48,11 +27,33 @@ class DiscryptorUser extends Equatable {
     required this.discriminator,
     required this.avatarUrl,
     required this.defaultAvatarUrl,
-    required this.bannerUrl,
+    this.bannerUrl,
     required this.publicKey,
     required this.isBot,
     required this.isWebhook,
   });
+
+  @override
+  List<Object?> get props {
+    return [
+      id,
+      createdAt,
+      guildId,
+      status,
+      username,
+      accentColor,
+      discriminator,
+      avatarUrl,
+      defaultAvatarUrl,
+      bannerUrl,
+      publicKey,
+      isBot,
+      isWebhook,
+    ];
+  }
+
+  String get usedAvatarUrl => avatarUrl.isEmpty ? defaultAvatarUrl : avatarUrl;
+  String get fullname => '$username#$discriminator';
 
   DiscryptorUser copyWith({
     int? id,
@@ -116,7 +117,7 @@ class DiscryptorUser extends Equatable {
       discriminator: map['discriminator'] as String,
       avatarUrl: map['avatarUrl'] as String,
       defaultAvatarUrl: map['defaultAvatarUrl'] as String,
-      bannerUrl: map['bannerUrl'] as String,
+      bannerUrl: map['bannerUrl'] != null ? map['bannerUrl'] as String : null,
       publicKey: map['publicKey'] as String,
       isBot: map['isBot'] as bool,
       isWebhook: map['isWebhook'] as bool,
@@ -129,43 +130,5 @@ class DiscryptorUser extends Equatable {
       DiscryptorUser.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() {
-    return 'DiscryptorUser(id: $id, createdAt: $createdAt, guildId: $guildId, status: $status, username: $username, accentColor: $accentColor, discriminator: $discriminator, avatarUrl: $avatarUrl, defaultAvatarUrl: $defaultAvatarUrl, bannerUrl: $bannerUrl, publicKey: $publicKey, isBot: $isBot, isWebhook: $isWebhook)';
-  }
-
-  @override
-  bool operator ==(covariant DiscryptorUser other) {
-    if (identical(this, other)) return true;
-
-    return other.id == id &&
-        other.createdAt == createdAt &&
-        other.guildId == guildId &&
-        other.status == status &&
-        other.username == username &&
-        other.accentColor == accentColor &&
-        other.discriminator == discriminator &&
-        other.avatarUrl == avatarUrl &&
-        other.defaultAvatarUrl == defaultAvatarUrl &&
-        other.bannerUrl == bannerUrl &&
-        other.publicKey == publicKey &&
-        other.isBot == isBot &&
-        other.isWebhook == isWebhook;
-  }
-
-  @override
-  int get hashCode {
-    return id.hashCode ^
-        createdAt.hashCode ^
-        guildId.hashCode ^
-        status.hashCode ^
-        username.hashCode ^
-        accentColor.hashCode ^
-        discriminator.hashCode ^
-        avatarUrl.hashCode ^
-        defaultAvatarUrl.hashCode ^
-        bannerUrl.hashCode ^
-        publicKey.hashCode ^
-        isBot.hashCode ^
-        isWebhook.hashCode;
-  }
+  bool get stringify => true;
 }

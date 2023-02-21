@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'cubits/cubits.dart';
-import 'services/services.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -38,6 +37,9 @@ class DiscryptorApp extends StatelessWidget {
           create: (context) =>
               NameCubit(locator.get<ApiRepo>(), locator.get<PreferenceRepo>()),
         ),
+        BlocProvider<RegisterCubit>(
+            lazy: false,
+            create: (context) => RegisterCubit(locator.get<AuthRepo>())),
         BlocProvider<SelectedChatCubit>(
             lazy: false, create: ((context) => SelectedChatCubit())),
         BlocProvider<ChatListCubit>(

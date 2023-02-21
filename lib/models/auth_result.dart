@@ -1,14 +1,15 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:equatable/equatable.dart';
+
 import 'package:discryptor/models/credentials.dart';
 import 'package:discryptor/models/discryptor_user.dart';
-import 'package:equatable/equatable.dart';
 
 class AuthResult extends Equatable {
   final String token;
   final String refreshToken;
-  final Credentials credentials;
+  final Credentials? credentials;
   final DiscryptorUser user;
   const AuthResult({
     required this.token,
@@ -38,7 +39,7 @@ class AuthResult extends Equatable {
     return <String, dynamic>{
       'token': token,
       'refreshToken': refreshToken,
-      'credentials': credentials.toMap(),
+      'credentials': credentials?.toMap(),
       'user': user.toMap(),
     };
   }
@@ -47,8 +48,9 @@ class AuthResult extends Equatable {
     return AuthResult(
       token: map['token'] as String,
       refreshToken: map['refreshToken'] as String,
-      credentials:
-          Credentials.fromMap(map['credentials'] as Map<String, dynamic>),
+      credentials: map['credentials'] != null
+          ? Credentials.fromMap(map['credentials'] as Map<String, dynamic>)
+          : null,
       user: DiscryptorUser.fromMap(map['user'] as Map<String, dynamic>),
     );
   }
@@ -59,25 +61,5 @@ class AuthResult extends Equatable {
       AuthResult.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
-  String toString() {
-    return 'AuthResult(token: $token, refreshToken: $refreshToken, credentials: $credentials, user: $user)';
-  }
-
-  @override
-  bool operator ==(covariant AuthResult other) {
-    if (identical(this, other)) return true;
-
-    return other.token == token &&
-        other.refreshToken == refreshToken &&
-        other.credentials == credentials &&
-        other.user == user;
-  }
-
-  @override
-  int get hashCode {
-    return token.hashCode ^
-        refreshToken.hashCode ^
-        credentials.hashCode ^
-        user.hashCode;
-  }
+  bool get stringify => true;
 }
