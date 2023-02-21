@@ -41,7 +41,7 @@ class AuthScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Text(
-                              "Authenticate as ${context.read<NameCubit>().state.fullname}",
+                              "Authenticate ${context.read<NameCubit>().state.fullname} with Discord",
                               textAlign: TextAlign.center,
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold),
@@ -72,10 +72,15 @@ class AuthScreen extends StatelessWidget {
                                               backgroundColor: Theme.of(context)
                                                   .primaryColor,
                                               textColor: Colors.white,
-                                              fontSize: 16.0,
+                                              fontSize: 14.0,
                                               msg: "Copied to Clipboard");
                                         },
-                                        child: Text(state.challengeString),
+                                        child: Text(
+                                          state.challengeString,
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(
+                                              color: Colors.white70),
+                                        ),
                                       ),
                                     ),
                                     Expanded(
@@ -87,7 +92,7 @@ class AuthScreen extends StatelessWidget {
                                             style: const ButtonStyle(
                                                 foregroundColor:
                                                     MaterialStatePropertyAll(
-                                                        Colors.white70)),
+                                                        Colors.white)),
                                             child: state.status ==
                                                     InviteStatus.busy
                                                 ? const SizedBox(

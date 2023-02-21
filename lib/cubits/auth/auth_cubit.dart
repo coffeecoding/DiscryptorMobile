@@ -38,7 +38,7 @@ class AuthCubit extends Cubit<AuthState> {
       if (challenge == null) return;
       int? userId = await prefsRepo.userId;
       if (userId == null) return; // should never happen
-      emit(state.copyWith(status: AuthStatus.authenticating));
+      emit(state.copyWith(status: AuthStatus.authenticating, error: ''));
       AuthPayload p = AuthPayload(userId: userId, challengeToken: challenge);
       ApiResponse<AuthResult> authResult = await authRepo.authenticate(p);
       if (!authResult.isSuccess) {
