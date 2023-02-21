@@ -1,5 +1,7 @@
 import 'package:discryptor/main.dart';
+import 'package:discryptor/views/home.dart';
 import 'package:discryptor/views/start/common/logo.dart';
+import 'package:discryptor/views/start/start.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:discryptor/cubits/cubits.dart';
@@ -21,7 +23,7 @@ class PasswordScreen extends StatelessWidget {
     final TextEditingController passwordCtr = TextEditingController();
     return BlocConsumer<LoginCubit, LoginState>(
         listener: (context, state) async {
-          //DiscryptorApp.navigatorKey.currentState!.push("");
+          DiscryptorApp.navigatorKey.currentState!.push(HomeScreen.route());
         },
         listenWhen: (context, state) => state.status == LoginStatus.loggedIn,
         builder: (context, state) => Material(
@@ -74,7 +76,8 @@ class PasswordScreen extends StatelessWidget {
                             ElevatedButton(
                                 onPressed: () => DiscryptorApp
                                     .navigatorKey.currentState!
-                                    .pop(),
+                                    .pushNamedAndRemoveUntil(
+                                        StartScreen.routeName, (route) => true),
                                 style: ButtonStyle(
                                     backgroundColor: MaterialStatePropertyAll(
                                         Theme.of(context)
