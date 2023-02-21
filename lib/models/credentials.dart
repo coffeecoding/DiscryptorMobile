@@ -59,22 +59,4 @@ class Credentials extends Equatable {
   String toString() {
     return 'Credentials(userId: $userId, publicKey: $publicKey, privateKeyEncrypted: $privateKeyEncrypted, created: $created)';
   }
-
-  @override
-  bool operator ==(covariant Credentials other) {
-    if (identical(this, other)) return true;
-
-    return other.userId == userId &&
-        other.publicKey == publicKey &&
-        other.privateKeyEncrypted == privateKeyEncrypted &&
-        other.created == created;
-  }
-
-  @override
-  int get hashCode {
-    return userId.hashCode ^
-        publicKey.hashCode ^
-        privateKeyEncrypted.hashCode ^
-        created.hashCode;
-  }
 }

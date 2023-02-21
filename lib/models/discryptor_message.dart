@@ -106,34 +106,4 @@ class DiscryptorMessage extends Equatable {
   String toString() {
     return 'DiscryptorMessage(id: $id, authorId: $authorId, channelId: $channelId, authorName: $authorName, recipientId: $recipientId, isPinned: $isPinned, cleanContent: $cleanContent, content: $content, createdAt: $createdAt, timestamp: $timestamp)';
   }
-
-  @override
-  bool operator ==(covariant DiscryptorMessage other) {
-    if (identical(this, other)) return true;
-
-    return other.id == id &&
-        other.authorId == authorId &&
-        other.channelId == channelId &&
-        other.authorName == authorName &&
-        other.recipientId == recipientId &&
-        other.isPinned == isPinned &&
-        other.cleanContent == cleanContent &&
-        other.content == content &&
-        other.createdAt == createdAt &&
-        other.timestamp == timestamp;
-  }
-
-  @override
-  int get hashCode {
-    return id.hashCode ^
-        authorId.hashCode ^
-        channelId.hashCode ^
-        authorName.hashCode ^
-        recipientId.hashCode ^
-        isPinned.hashCode ^
-        cleanContent.hashCode ^
-        content.hashCode ^
-        createdAt.hashCode ^
-        timestamp.hashCode;
-  }
 }
