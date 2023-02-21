@@ -120,9 +120,7 @@ class AuthRepo {
         if (success) return register(creds);
         return ApiResponse(re.statusCode, 'Re-authenticate', null, false);
       }
-      final res = re.body.toLowerCase() == 'true' ? true : false;
-      return ApiResponse(
-          re.statusCode, re.reasonPhrase, res, re.isSuccess() && res);
+      return ApiResponse(re.statusCode, re.reasonPhrase, true, re.isSuccess());
     } catch (e) {
       print('Error getting credentials: $e');
       return ApiResponse(300, 'Unexpected error', null, false);

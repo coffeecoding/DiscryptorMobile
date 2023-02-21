@@ -32,6 +32,7 @@ class RegisterCubit extends Cubit<RegisterState> {
             error: 'Confirmed password must match password.'));
         return;
       }
+      emit(state.copyWith(status: RegisterStatus.busy));
       final userId = await prefRepo.userId;
       final salt64 = await prefRepo.salt;
       if (userId == null || salt64 == null) {

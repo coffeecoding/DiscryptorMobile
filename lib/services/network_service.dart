@@ -24,7 +24,7 @@ class NetworkService {
   final Map<String, String> _defaultHeaders;
 
   void setToken(String authToken) {
-    _defaultHeaders['Authorization'] = authToken;
+    _defaultHeaders['Authorization'] = 'Bearer $authToken';
   }
 
   Uri _createUri(String requestUri) {

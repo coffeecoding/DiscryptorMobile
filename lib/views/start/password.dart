@@ -35,7 +35,7 @@ class PasswordScreen extends StatelessWidget {
                         child: SingleChildScrollView(
                             child: Column(
                           mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             TextField(
                                 controller: TextEditingController(
