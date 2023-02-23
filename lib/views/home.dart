@@ -44,32 +44,36 @@ class HomeScreen extends StatelessWidget {
             : Column(
                 children: [
                   Expanded(
-                    child: ListView.builder(
-                        itemCount: state.chats.length,
-                        itemBuilder: (context, index) => RawMaterialButton(
-                            onPressed: () {
-                              context
-                                  .read<ChatListCubit>()
-                                  .selectChat(state.chats[index]);
-                              DiscryptorApp.navigatorKey.currentState!
-                                  .pushNamed(ChatScreen.routeName);
-                            },
-                            elevation: 2.0,
-                            padding: const EdgeInsets.all(8),
-                            child: Row(
-                              children: [
-                                CircleAvatar(
-                                  radius: 20,
-                                  backgroundImage: NetworkImage(SampleData
-                                      .sampleContacts[index].usedAvatarUrl),
-                                ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(SampleData
-                                      .sampleContacts[index].username),
-                                )
-                              ],
-                            ))),
+                    child: RefreshIndicator(
+                      onRefresh: () =>
+                          context.read<ChatListCubit>().loadChats(),
+                      child: ListView.builder(
+                          itemCount: state.chats.length,
+                          itemBuilder: (context, index) => RawMaterialButton(
+                              onPressed: () {
+                                context
+                                    .read<ChatListCubit>()
+                                    .selectChat(state.chats[index]);
+                                DiscryptorApp.navigatorKey.currentState!
+                                    .pushNamed(ChatScreen.routeName);
+                              },
+                              elevation: 2.0,
+                              padding: const EdgeInsets.all(8),
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 20,
+                                    backgroundImage: NetworkImage(SampleData
+                                        .sampleContacts[index].usedAvatarUrl),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Text(SampleData
+                                        .sampleContacts[index].username),
+                                  )
+                                ],
+                              ))),
+                    ),
                   ),
                   const Divider(height: 1, indent: 0, endIndent: 0),
                   Material(

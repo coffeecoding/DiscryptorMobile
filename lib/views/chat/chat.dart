@@ -47,8 +47,12 @@ class ChatScreen extends StatelessWidget {
               ),
               body: Column(
                 children: [
-                  const Expanded(
-                      child: Center(child: Text('Chat will be here'))),
+                  Expanded(
+                      child: ListView.builder(
+                          itemCount: state.chat!.messages.length,
+                          itemBuilder: (context, i) {
+                            return Text('hi');
+                          })),
                   const Divider(height: 1.0),
                   StatefulBuilder(
                     builder: (context, setState) => Container(

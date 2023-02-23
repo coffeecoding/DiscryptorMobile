@@ -3,6 +3,7 @@ import 'package:discryptor/cubits/selected_chat/selected_chat_cubit.dart';
 import 'package:discryptor/cubitvms/chat_vm.dart';
 import 'package:discryptor/cubitvms/user_vm.dart';
 import 'package:discryptor/models/discryptor_message.dart';
+import 'package:discryptor/models/discryptor_user.dart';
 import 'package:discryptor/repos/repos.dart';
 import 'package:discryptor/services/crypto_service.dart';
 import 'package:equatable/equatable.dart';
@@ -24,25 +25,25 @@ class ChatListCubit extends Cubit<ChatListState> {
     selectedChatCubit.selectChat(chat);
   }
 
-  Future<ChatViewModel?> handleReceivedMessage(DiscryptorMessage msg,
-      {bool inOrder = false}) async {
+  Future<DiscryptorMessage?> handleReceivedMessage(
+      DiscryptorMessage msg, DiscryptorUser self, List<ChatViewModel> chatVMs,
+      {bool inOrder = true}) async {
     try {
-      if (msg.content.startsWith('AUTH')) return null;
+      if (!msg.content.startsWith('M.')) return null;
       final parts = msg.content.split('.');
-      if (parts.length > 4) return null;
-      final senderId = int.parse(parts[0]);
-      final recipientId = int.parse(parts[1]);
+      if (parts.length > 5) return null;
+      final senderId = int.parse(parts[1]);
+      final recipientId = int.parse(parts[2]);
 
-      final self = await prefRepo.user;
-      final isSelfSender = self!.id == senderId;
+      final isSelfSender = self.id == senderId;
 
-      ChatViewModel? chatVM = state.chats.firstWhereOrNull((c) =>
+      ChatViewModel? chatVM = chatVMs.firstWhereOrNull((c) =>
           c.userState.user.id == (isSelfSender ? recipientId : senderId));
 
       if (chatVM == null) return null; // Todo: log
 
-      final ivBase64 = parts[2];
-      final encryptedMsg = parts[3];
+      final ivBase64 = parts[3];
+      final encryptedMsg = parts[4];
 
       final decryptedMsg =
           crypto.decryptMessage(encryptedMsg, ivBase64, chatVM.keyBase64!);
@@ -60,7 +61,7 @@ class ChatListCubit extends Cubit<ChatListState> {
         chatVM.addMessageOutOfOrder(receivedMsg, isSelfSender);
       }
 
-      return chatVM;
+      return receivedMsg;
     } catch (e) {
       print('Error receiving message $msg: $e');
       // Probably don't emit new state as this only concerns a single msg,
@@ -80,7 +81,11 @@ class ChatListCubit extends Cubit<ChatListState> {
       }
       final userVMs = re.content!.users.map((u) => UserViewModel(user: u));
       final chatVMs = userVMs.map((uvm) => ChatViewModel(uvm)).toList();
-      re.content!.messages.forEach(handleReceivedMessage);
+      final privKey = await prefRepo.privkey;
+      final self = await prefRepo.user;
+      chatVMs.forEach((c) => c.decryptSymmetricKey(privKey!));
+      re.content!.messages
+          .forEach((m) => handleReceivedMessage(m, self!, chatVMs));
       emit(state.copyWith(status: ChatListStatus.success, chats: chatVMs));
     } catch (e) {
       emit(state.copyWith(status: ChatListStatus.error, error: '$e'));
