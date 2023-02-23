@@ -41,6 +41,7 @@ class ChatScreen extends StatelessWidget {
                     .read<SelectedChatCubit>()
                     .state
                     .chat!
+                    .userState
                     .user
                     .username),
               ),

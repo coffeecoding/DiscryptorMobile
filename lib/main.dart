@@ -1,3 +1,4 @@
+import 'package:discryptor/services/crypto_service.dart';
 import 'package:discryptor/views/custom_router.dart';
 import 'package:discryptor/config/locator.dart';
 import 'package:discryptor/repos/repos.dart';
@@ -45,8 +46,11 @@ class DiscryptorApp extends StatelessWidget {
             lazy: false, create: ((context) => SelectedChatCubit())),
         BlocProvider<ChatListCubit>(
           lazy: false,
-          create: ((context) =>
-              ChatListCubit(context.read<SelectedChatCubit>())),
+          create: ((context) => ChatListCubit(
+              context.read<SelectedChatCubit>(),
+              locator.get<ApiRepo>(),
+              locator.get<PreferenceRepo>(),
+              locator.get<CryptoService>())),
         ),
         BlocProvider<AuthCubit>(
             lazy: false,

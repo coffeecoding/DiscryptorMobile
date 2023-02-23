@@ -18,10 +18,10 @@ class UserViewModel extends Equatable {
       user.relationshipAcceptanceDate != null &&
       user.relationshipAcceptanceDate! > 0;
 
-  UserViewModel({
-    required this.status,
+  const UserViewModel({
+    this.status = UserStatus.success,
     required this.user,
-    required this.error,
+    this.error = '',
   });
 
   UserViewModel copyWith({

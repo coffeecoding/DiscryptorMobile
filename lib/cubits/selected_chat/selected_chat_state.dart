@@ -29,5 +29,6 @@ class SelectedChatState extends Equatable {
   final String error;
 
   @override
-  List<Object?> get props => [status, chat?.user.id, chat, message, error];
+  List<Object?> get props =>
+      [status, chat?.userState.user.id, chat, message, error];
 }

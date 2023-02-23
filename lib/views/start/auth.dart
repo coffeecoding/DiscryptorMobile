@@ -72,7 +72,7 @@ class AuthScreen extends StatelessWidget {
                                     Expanded(
                                       flex: 1,
                                       child: GestureDetector(
-                                        onLongPress: () {
+                                        onTap: () {
                                           Clipboard.setData(ClipboardData(
                                               text: context
                                                   .read<ChallengeCubit>()
