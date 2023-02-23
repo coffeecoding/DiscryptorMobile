@@ -1,13 +1,15 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:discryptor/models/idiscryptor_user.dart';
 import 'package:equatable/equatable.dart';
 
-class DiscryptorUser extends Equatable {
+class DiscryptorUser extends Equatable with IDiscryptorUser {
   final int id;
   final int createdAt;
   final int guildId;
   final int status;
+  @override
   final String username;
   final int? accentColor;
   final String discriminator;
@@ -52,6 +54,7 @@ class DiscryptorUser extends Equatable {
     ];
   }
 
+  @override
   String get usedAvatarUrl => avatarUrl.isEmpty ? defaultAvatarUrl : avatarUrl;
   String get fullname => '$username#$discriminator';
 
