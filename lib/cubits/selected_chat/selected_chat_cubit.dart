@@ -11,6 +11,11 @@ class SelectedChatCubit extends Cubit<SelectedChatState> {
     emit(SelectedChatState(chat: chat));
   }
 
+  void refresh() {
+    emit(state.copyWith(status: SelectedChatStatus.busyLoading));
+    emit(state.copyWith(status: SelectedChatStatus.success));
+  }
+
   Future<void> sendMessage(String message) async {
     try {
       emit(state.copyWith(

@@ -50,7 +50,17 @@ class ChatScreen extends StatelessWidget {
                 children: [
                   Expanded(
                       child: RefreshIndicator(
-                    onRefresh: () => context.read<ChatListCubit>().loadChats(),
+                    onRefresh: () {
+                      final clc = context.read<ChatListCubit>();
+                      final scc = context.read<SelectedChatCubit>();
+                      clc.loadChats().then((_) {
+                        scc.selectChat(clc.state.chats.firstWhere((c) =>
+                            c.userState.user.id ==
+                            state.chat!.userState.user.id));
+                        scc.refresh();
+                      });
+                      return Future.value();
+                    },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: ListView.builder(
@@ -138,7 +148,10 @@ class ChatMessage extends StatelessWidget {
         const SizedBox(width: 12),
         Expanded(
             child: user == null
-                ? Text(messageVM.message.content)
+                ? Padding(
+                    padding: const EdgeInsets.only(top: 2),
+                    child: Text(messageVM.message.content),
+                  )
                 : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

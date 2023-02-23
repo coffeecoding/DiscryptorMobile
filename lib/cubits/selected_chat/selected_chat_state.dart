@@ -17,7 +17,7 @@ class SelectedChatState extends Equatable {
       String? error}) {
     return SelectedChatState(
         status: status ?? this.status,
-        chat: chat ?? chat,
+        chat: this.chat,
         message: message ?? this.message,
         error: error ?? this.error);
   }
