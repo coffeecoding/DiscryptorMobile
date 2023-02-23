@@ -138,7 +138,7 @@ class ChatMessage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(top: isPreviousSelf ? 0 : 16.0),
-      child: Row(children: [
+      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         user == null
             ? const SizedBox(width: 40)
             : CircleAvatar(
