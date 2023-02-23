@@ -22,6 +22,7 @@ class SelectedChatState extends Equatable {
         error: error ?? this.error);
   }
 
+  // Need another object for chat message list
   final SelectedChatStatus status;
   final ChatViewModel? chat;
   final String message;

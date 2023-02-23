@@ -3,6 +3,7 @@ import 'package:discryptor/main.dart';
 import 'package:discryptor/models/models.dart';
 import 'package:discryptor/views/home.dart';
 import 'package:discryptor/views/start/common/logo.dart';
+import 'package:discryptor/views/start/password.dart';
 import 'package:discryptor/views/start/register.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +35,7 @@ class AuthScreen extends StatelessWidget {
           } else if (userStatus == UserPubSearchResultState.found) {
             await context.read<AuthCubit>().resumeAuth();
             DiscryptorApp.navigatorKey.currentState!
-                .popAndPushNamed(HomeScreen.routeName);
+                .popAndPushNamed(PasswordScreen.routeName);
           }
         },
         listenWhen: (context, state) =>
