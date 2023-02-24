@@ -69,7 +69,7 @@ class AuthRepo {
         return null;
       }
       _net.setToken(token);
-      bool hasValidToken = await _validateOrRenewToken();
+      bool hasValidToken = await validateOrRenewToken();
       if (!hasValidToken) {
         // reauthentication needed!
         print('Token validation/renewal failed: Re-authentication needed!');
@@ -165,7 +165,7 @@ class AuthRepo {
     }
   }
 
-  Future<bool> _validateOrRenewToken() async {
+  Future<bool> validateOrRenewToken() async {
     try {
       Response re = await _net.get('/api/authcheck');
       if (!re.isSuccess()) {
@@ -174,7 +174,7 @@ class AuthRepo {
           print('Failed to refresh auth token');
           return false;
         }
-        return await _validateOrRenewToken();
+        return await validateOrRenewToken();
       }
       bool isValidToken = jsonDecode(re.body);
       return isValidToken;

@@ -16,19 +16,21 @@ class AuthCubit extends Cubit<AuthState> {
   final AuthRepo authRepo;
   final ChallengeCubit challengeCubit;
 
-  Future<void> resumeAuth() async {
+  Future<bool> resumeAuth() async {
     try {
       emit(const AuthState(status: AuthStatus.authenticating));
       final user = await authRepo.initAuth();
       if (user == null) {
         emit(AuthState.unauthenticated());
-        return;
+        return false;
       }
       emit(AuthState(status: AuthStatus.authenticated, user: user));
+      return true;
     } catch (e) {
       print('Init auth failed: $e');
       // do nothing: We will stay unauthenticated for now
       emit(AuthState(status: AuthStatus.autherror, error: '$e'));
+      return false;
     }
   }
 

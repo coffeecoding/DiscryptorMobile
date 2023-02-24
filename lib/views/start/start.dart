@@ -1,4 +1,8 @@
+import 'package:discryptor/config/locator.dart';
 import 'package:discryptor/main.dart';
+import 'package:discryptor/repos/auth_repo.dart';
+import 'package:discryptor/repos/preference_repo.dart';
+import 'package:discryptor/services/network_service.dart';
 import 'package:discryptor/views/start/auth.dart';
 import 'package:discryptor/views/start/password.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +36,13 @@ class StartScreen extends StatelessWidget {
             final dlg = CustomDialog(child: ServerInviteDialog());
             await showDialog(context: context, builder: (c) => dlg);
           } else {
-            DiscryptorApp.navigatorKey.currentState!.push(AuthScreen.route());
+            final authTest = await context.read<AuthCubit>().resumeAuth();
+            if (authTest) {
+              DiscryptorApp.navigatorKey.currentState!
+                  .push(PasswordScreen.route());
+            } else {
+              DiscryptorApp.navigatorKey.currentState!.push(AuthScreen.route());
+            }
           }
         },
         listenWhen: (context, state) => state.status == NameStatus.success,
