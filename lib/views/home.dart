@@ -111,6 +111,7 @@ class AvatarWithStatus extends StatelessWidget {
         ),
         BlocBuilder<StatusesCubit, StatusesState>(
           builder: (context, state) {
+            print(state.statusByUserId(userVM.user.id));
             return Padding(
               padding: const EdgeInsets.only(top: 26, left: 26),
               child: Container(

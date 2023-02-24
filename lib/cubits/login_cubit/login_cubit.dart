@@ -26,8 +26,8 @@ class LoginCubit extends Cubit<LoginState> {
 
   void _startStatusFetcher() {
     print('Starting status fetcher ...');
-    _statusFetcher = Timer.periodic(const Duration(seconds: 2), (timer) {
-      print('Placeholder for fetching');
+    _statusFetcher = Timer.periodic(const Duration(seconds: 30), (timer) {
+      statusesCubit.getStatuses();
     });
   }
 
