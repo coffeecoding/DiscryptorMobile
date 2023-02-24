@@ -10,17 +10,19 @@ const discordStatusToColor = {
 };
 
 class StatusIndicator extends StatelessWidget {
-  const StatusIndicator({super.key, this.discordStatus = 4});
+  const StatusIndicator(
+      {super.key, this.discordStatus = 4, this.showBorder = true});
 
   final int discordStatus;
+  final bool showBorder;
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 16,
-      height: 16,
+      width: showBorder ? 16 : 10,
+      height: showBorder ? 16 : 10,
       decoration: BoxDecoration(
-          border: Border.all(width: 3),
+          border: showBorder ? Border.all(width: 3) : null,
           color: discordStatusToColor[discordStatus],
           shape: BoxShape.circle),
     );
