@@ -3,6 +3,7 @@ import 'package:discryptor/cubits/cubits.dart';
 import 'package:discryptor/cubitvms/user_vm.dart';
 import 'package:discryptor/main.dart';
 import 'package:discryptor/views/chat/chat.dart';
+import 'package:discryptor/views/common/status.dart';
 import 'package:discryptor/views/start/password.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
@@ -87,15 +88,6 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-const colorToStatus = {
-  0: Colors.orange,
-  1: Colors.red,
-  2: Colors.orange,
-  3: Colors.grey,
-  4: Colors.grey,
-  5: Colors.green
-};
-
 class AvatarWithStatus extends StatelessWidget {
   const AvatarWithStatus(this.userVM, {super.key});
 
@@ -111,18 +103,10 @@ class AvatarWithStatus extends StatelessWidget {
         ),
         BlocBuilder<StatusesCubit, StatusesState>(
           builder: (context, state) {
-            print(state.statusByUserId(userVM.user.id));
             return Padding(
-              padding: const EdgeInsets.only(top: 26, left: 26),
-              child: Container(
-                width: 16,
-                height: 16,
-                decoration: BoxDecoration(
-                    border: Border.all(width: 3),
-                    color: colorToStatus[state.statusByUserId(userVM.user.id)],
-                    shape: BoxShape.circle),
-              ),
-            );
+                padding: const EdgeInsets.only(top: 26, left: 26),
+                child: StatusIndicator(
+                    discordStatus: state.statusByUserId(userVM.user.id)));
           },
         )
       ],
