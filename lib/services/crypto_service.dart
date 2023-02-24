@@ -11,12 +11,11 @@ class CryptoService {
 
   late PreferenceRepo prefsRepo;
 
-  ChatMessage encryptMessage(ChatMessage chatMessage, String key) {
+  ChatMessage encryptMessage(String message, String key) {
     StatefulAES dummyAes = StatefulAES();
     StatefulAES aes = StatefulAES.fromParams(key, base64.encode(dummyAes.iv()));
     return ChatMessage(
-        iv: base64.encode(aes.iv()),
-        message: aes.encryptToBase64(chatMessage.message));
+        iv: base64.encode(aes.iv()), message: aes.encryptToBase64(message));
   }
 
   String decryptMessage(String message, String ivBase64, String key) {

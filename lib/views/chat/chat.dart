@@ -7,6 +7,7 @@ import 'package:discryptor/models/discryptor_user.dart';
 import 'package:discryptor/models/idiscryptor_user.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:discryptor/extensions/datetime_ext.dart';
 
@@ -26,10 +27,16 @@ class ChatScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    DiscryptorUser self = context.read<AuthCubit>().state.user!;
+    ScrollController sctr = ScrollController(keepScrollOffset: true);
+    TextEditingController ctr = TextEditingController();
     return SafeArea(
       child: BlocBuilder<SelectedChatCubit, SelectedChatState>(
+        buildWhen: (prev, next) {
+          return prev != next;
+        },
         builder: (context, state) {
+          final ac = context.read<AuthCubit>();
+          DiscryptorUser self = ac.state.user!;
           return Scaffold(
               appBar: AppBar(
                 elevation: 0,
@@ -64,24 +71,24 @@ class ChatScreen extends StatelessWidget {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: ListView.builder(
-                          itemCount: state.chat!.messages.length,
+                          shrinkWrap: true,
+                          controller: sctr,
+                          itemCount: state.messages.length,
                           itemBuilder: (context, i) {
                             bool isPreviousSame = i == 0
                                 ? true
-                                : state.chat!.messages[i].message.authorId ==
-                                    state
-                                        .chat!.messages[i - 1].message.authorId;
+                                : state.messages[i].message.authorId ==
+                                    state.messages[i - 1].message.authorId;
                             return i == 0
-                                ? ChatMessage(state.chat!.messages[i],
-                                    user: (state.chat!.messages[i].isSelfSender
+                                ? ChatMessage(state.messages[i],
+                                    user: (state.messages[i].isSelfSender
                                             ? self
                                             : state.chat!.userState.user)
                                         as IDiscryptorUser)
                                 : isPreviousSame
-                                    ? ChatMessage(state.chat!.messages[i])
-                                    : ChatMessage(state.chat!.messages[i],
-                                        user: (state.chat!.messages[i]
-                                                    .isSelfSender
+                                    ? ChatMessage(state.messages[i])
+                                    : ChatMessage(state.messages[i],
+                                        user: (state.messages[i].isSelfSender
                                                 ? self
                                                 : state.chat!.userState.user)
                                             as IDiscryptorUser,
@@ -101,7 +108,11 @@ class ChatScreen extends StatelessWidget {
                                 Flexible(
                                   child: Material(
                                       child: TextField(
+                                          controller: ctr,
                                           onChanged: (val) {
+                                            context
+                                                .read<SelectedChatCubit>()
+                                                .messageFieldChanged(val);
                                             setState(() => _isComposing =
                                                 val.isEmpty ? false : true);
                                           },
@@ -112,7 +123,24 @@ class ChatScreen extends StatelessWidget {
                                                   hintText: 'Compose ...'))),
                                 ),
                                 IconButton(
-                                    onPressed: _isComposing ? () => {} : null,
+                                    onPressed: !_isComposing ||
+                                            state.status ==
+                                                SelectedChatStatus.busySending
+                                        ? null
+                                        : () => context
+                                                .read<SelectedChatCubit>()
+                                                .sendMessage(ctr.text)
+                                                .then((success) {
+                                              if (success) {
+                                                ctr.text = '';
+                                                SchedulerBinding.instance
+                                                    .addPostFrameCallback((_) {
+                                                  sctr.jumpTo(sctr.position
+                                                      .maxScrollExtent);
+                                                });
+                                              }
+                                            }),
+                                    splashRadius: 1,
                                     icon:
                                         const Icon(FluentIcons.send_20_filled))
                               ],

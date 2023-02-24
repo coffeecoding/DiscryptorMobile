@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:discryptor/cubits/cubits.dart';
-import 'package:discryptor/repos/auth_repo.dart';
 import 'package:discryptor/repos/repos.dart';
 import 'package:equatable/equatable.dart';
 
@@ -41,9 +40,16 @@ class LoginCubit extends Cubit<LoginState> {
         return;
       }
       prefRepo.setCredentials(creds);
+      bool socketSuccess = await authRepo.connectSignalR();
+      if (!socketSuccess) {
+        emit(state.copyWith(
+            status: LoginStatus.error, message: 'SignalR connection failed'));
+        return;
+      }
       emit(state.copyWith(status: LoginStatus.loggedIn));
       appCubit.retrieveData();
     } catch (e) {
+      print('e');
       emit(state.copyWith(status: LoginStatus.error, message: '$e'));
     }
   }

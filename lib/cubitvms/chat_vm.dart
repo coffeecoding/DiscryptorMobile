@@ -10,7 +10,7 @@ import 'package:discryptor/cubitvms/user_vm.dart';
 
 enum ChatStatus { initial, busyLoading, busySending, error, success }
 
-class ChatViewModel {
+class ChatViewModel extends Equatable {
   ChatViewModel(
     this.userState, {
     this.status = ChatStatus.initial,

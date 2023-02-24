@@ -7,8 +7,8 @@ class SelectedChatState extends Equatable {
   const SelectedChatState(
       {this.status = SelectedChatStatus.initial,
       this.chat,
-      this.message = '',
-      this.error = ''});
+      this.error = '',
+      this.rebuildToggle = false});
 
   SelectedChatState copyWith(
       {SelectedChatStatus? status,
@@ -18,17 +18,19 @@ class SelectedChatState extends Equatable {
     return SelectedChatState(
         status: status ?? this.status,
         chat: this.chat,
-        message: message ?? this.message,
-        error: error ?? this.error);
+        error: error ?? this.error,
+        rebuildToggle: !rebuildToggle);
   }
 
   // Need another object for chat message list
   final SelectedChatStatus status;
   final ChatViewModel? chat;
-  final String message;
   final String error;
+  final bool rebuildToggle;
+
+  List<MessageViewModel> get messages => chat == null ? [] : chat!.messages;
 
   @override
   List<Object?> get props =>
-      [status, chat?.userState.user.id, chat, message, error];
+      [status, chat?.userState.user.id, chat, rebuildToggle, error];
 }

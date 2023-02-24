@@ -5,6 +5,7 @@ import 'package:discryptor/repos/preference_repo.dart';
 import 'package:discryptor/services/network_service.dart';
 import 'package:http/http.dart';
 import 'package:discryptor/extensions/http_ext.dart';
+import 'package:signalr_netcore/signalr_client.dart';
 
 import '../models/models.dart';
 
@@ -16,26 +17,38 @@ class AuthRepo {
   final NetworkService _net;
   final PreferenceRepo _prefsRepo;
 
-  // SignalR comment
-  // Fixed by going with docs of parameter on clients and server like KeepAliveInterval & you should increase the timeout of HttpConnectionOptions like this:
-  // final httpOptions = new HttpConnectionOptions(logger: transportProtLogger, requestTimeout: 15000, skipNegotiation: true, transport: HttpTransportType.WebSockets);
-  // see issue: https://github.com/sefidgaran/signalr_client/issues/37
+  HubConnection get socket => _net.socket;
 
-  /// template function for any generic API call
-  Future<ApiResponse<AuthResult>> templatefn() async {
+  Future<bool> connectSignalR() async {
     try {
-      const uri = '/api/';
-      final re = await _net.get(uri);
-      if (re.statusCode == 401) {
-        bool success = await refreshAuth();
-        if (success) return templatefn();
-        return ApiResponse(re.statusCode, 'Re-authenticate', null, false);
+      await _net.socket.stop();
+      await _net.socket.start();
+      if (_net.socket.state == HubConnectionState.Connected) {
+        _net.socket.on('Disconnect', (_) => _net.socket.stop());
+        _net.socket.onreconnecting(
+            ({error}) => print('Socket reconnecting due to error $error'));
+        _net.socket.onreconnected(({connectionId}) async {
+          print('Socket reconnected with id $connectionId!');
+          final tk = await _prefsRepo.token;
+          if (tk != null) {
+            _net.socket.invoke('ConnectClient', args: [tk]);
+          }
+        });
+
+        final token = await _prefsRepo.token;
+
+        if (token != null) {
+          final success =
+              await _net.socket.invoke('ConnectClient', args: [token]);
+          return success as bool;
+        }
+        return false;
       }
-      //final res = CLASS.fromJson(re.body);
-      return ApiResponse(re.statusCode, re.reasonPhrase, null, re.isSuccess());
+      print('SignalR connection start unsuccessful.');
+      return false;
     } catch (e) {
-      print('Error doing X: $e');
-      return ApiResponse(300, 'Unexpected error', null, false);
+      print('SignalR connection failed: $e');
+      return false;
     }
   }
 

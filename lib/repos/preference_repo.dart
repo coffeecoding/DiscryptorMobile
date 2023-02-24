@@ -25,21 +25,38 @@ class PreferenceRepo {
   final FlutterSecureStorage _secureStorage;
   final Future<SharedPreferences> _prefs;
 
-  Future<bool> get loggedIn async => await username != null;
+  // cached, safe, backing values for non-async access to public pref values
+  String? _username;
+  int? _userId;
+  String? _salt;
+  DiscryptorUser? _user;
+
+  // public preferences access
   Future<String?> get username async =>
-      _prefs.then((prefs) => prefs.getString(_usernameKey));
+      _username ??= await _prefs.then((prefs) => prefs.getString(_usernameKey));
   Future<int?> get userId async =>
-      _prefs.then((prefs) => prefs.getInt(_useridKey));
-  Future<String?> get salt => _prefs.then((prefs) => prefs.getString(_pwsalt));
-  Future<String?> get privkey async => _secureStorage.read(key: _privkeyKey);
-  Future<String?> get token async => _secureStorage.read(key: _tokenKey);
-  Future<String?> get refreshToken async =>
-      _secureStorage.read(key: _refreshTokenKey);
-  Future<DiscryptorUser?> get user => _prefs.then((SharedPreferences prefs) {
+      _userId ??= await _prefs.then((prefs) => prefs.getInt(_useridKey));
+  Future<String?> get salt async =>
+      _salt ??= await _prefs.then((prefs) => prefs.getString(_pwsalt));
+  Future<DiscryptorUser?> get user async =>
+      _user ??= await _prefs.then((SharedPreferences prefs) {
         String? userJson = prefs.getString(_userKey);
         if (userJson == null) return null;
         return DiscryptorUser.fromJson(userJson);
       });
+
+  // secure storage access
+  Future<String?> get privkey async => _secureStorage.read(key: _privkeyKey);
+  Future<String?> get token async => _secureStorage.read(key: _tokenKey);
+  Future<String?> get refreshToken async =>
+      _secureStorage.read(key: _refreshTokenKey);
+
+  void clearCache() {
+    _user = null;
+    _userId = null;
+    _salt = null;
+    _username = null;
+  }
 
   Future<void> clearAuth() async {
     await _secureStorage.deleteAll();

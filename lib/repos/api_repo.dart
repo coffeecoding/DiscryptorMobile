@@ -5,6 +5,7 @@ import 'package:discryptor/extensions/http_ext.dart';
 import 'package:discryptor/models/key_value_pair.dart';
 import 'package:discryptor/models/models.dart';
 import 'package:discryptor/services/network_service.dart';
+import 'package:signalr_netcore/signalr_client.dart';
 
 import 'auth_repo.dart';
 
@@ -201,7 +202,8 @@ class ApiRepo {
       return ApiResponse(re.statusCode, re.reasonPhrase, res, re.isSuccess());
     } catch (e) {
       print('Error accepting request of $initiatorId: $e');
-      return ApiResponse(300, 'Unexpected error', null, false);
+      return ApiResponse(
+          300, 'Error accepting request of $initiatorId: $e', null, false);
     }
   }
 
@@ -218,7 +220,24 @@ class ApiRepo {
       return ApiResponse(re.statusCode, re.reasonPhrase, res, re.isSuccess());
     } catch (e) {
       print('Error cancelling relationship with $exFriendId: $e');
-      return ApiResponse(300, 'Unexpected error', null, false);
+      return ApiResponse(300, '$e', null, false);
+    }
+  }
+
+  Future<ApiResponse<DiscryptorMessage>> sendMessage(
+      int recipientId, String message) async {
+    try {
+      final msg = await _net.socket.invoke('SendMessage', args: [
+        recipientId,
+        message
+      ]).then((map) => DiscryptorMessage.fromMap(map as Map<String, dynamic>));
+      if (msg == null) {
+        throw Exception('Failed to deliver message. Returned id was null');
+      }
+      return ApiResponse(200, null, msg, true);
+    } catch (e) {
+      print('Failed to send message: $e');
+      return ApiResponse(300, '$e', null, false);
     }
   }
 

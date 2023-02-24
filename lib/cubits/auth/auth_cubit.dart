@@ -50,12 +50,14 @@ class AuthCubit extends Cubit<AuthState> {
       emit(state.copyWith(
           status: AuthStatus.authenticated, user: authResult.content!.user));
     } catch (e) {
+      print('Authentication failed: $e');
       emit(AuthState.unauthenticated(error: '$e'));
     }
   }
 
   void logout() {
     // todo: stop websocket, delete tokens etc
+    prefsRepo.clearCache();
     emit(AuthState.unauthenticated());
   }
 }

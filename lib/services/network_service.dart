@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:http/io_client.dart';
+import 'package:signalr_netcore/signalr_client.dart';
 
 class ProxyAwareHttpClient extends IOClient {
   ProxyAwareHttpClient()
@@ -15,12 +16,25 @@ class NetworkService {
         _defaultHeaders = {
           'Content-Type': 'application/json',
           'Authorization': ''
-        };
+        },
+        socket =
+            HubConnectionBuilder().withUrl('http://$baseUrl/socket').build() {
+    final options = HttpConnectionOptions(
+        requestTimeout: 15000,
+        skipNegotiation: true,
+        transport: HttpTransportType.WebSockets);
+    // HttpConnection cn =
+    // HttpConnection('http://$baseUrl/socket', options: options);
+    // cn.start();
+    //socket.start();
+    socket.onclose(({error}) => print('Socket closed with error: $error'));
+  }
 
   //static const String baseUrl = 'server.discryptor.io';
   static const String baseUrl = '192.168.178.44:5278';
 
   final http.Client _client;
+  final HubConnection socket;
   final Map<String, String> _defaultHeaders;
 
   void setToken(String authToken) {
