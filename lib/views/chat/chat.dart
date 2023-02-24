@@ -55,7 +55,11 @@ class ChatScreen extends StatelessWidget {
                 ),
                 title: Row(
                   children: [
-                    Text('@ ', style: TextStyle(color: Colors.grey.shade600)),
+                    Icon(
+                      FluentIcons.mention_20_filled,
+                      color: Colors.grey.shade600,
+                    ),
+                    const SizedBox(width: 4),
                     Text(state.chat!.userVM.user.username),
                     const SizedBox(width: 6),
                     Padding(
