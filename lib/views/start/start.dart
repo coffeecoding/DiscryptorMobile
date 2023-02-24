@@ -73,7 +73,7 @@ class StartScreen extends StatelessWidget {
                                 : ElevatedButton(
                                     onPressed: () => context
                                         .read<NameCubit>()
-                                        .getUserAndContinue(),
+                                        .getUserFromApi(),
                                     child: const SizedBox(
                                         width: double.infinity,
                                         height: 40,

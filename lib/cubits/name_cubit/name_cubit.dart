@@ -17,7 +17,28 @@ class NameCubit extends Cubit<NameState> {
         status: NameStatus.initial, fullname: name, message: ''));
   }
 
-  Future<void> getUserAndContinue() async {
+  Future<bool> getUserFromPrefs() async {
+    String? username = await prefsRepo.username;
+    String? salt = await prefsRepo.salt;
+    int? userId = await prefsRepo.userId;
+    String? fullname = await prefsRepo.fullname;
+
+    if (username != null && salt != null && userId != null) {
+      final pubData = UserPubSearchResult(
+          passwordSalt: salt,
+          result: UserPubSearchResultState.found,
+          userId: userId);
+      emit(state.copyWith(
+          status: NameStatus.success, result: pubData, fullname: fullname!));
+      return true;
+    } else {
+      emit(state.copyWith(
+          status: NameStatus.error, message: 'No user found locally'));
+      return false;
+    }
+  }
+
+  Future<void> getUserFromApi() async {
     try {
       if (state.fullname.isEmpty) {
         emit(state.copyWith(

@@ -15,7 +15,7 @@ class PreferenceRepo {
   static const String _useridKey = 'userid';
   static const String _privkeyKey = 'privkey';
   static const String _pwsalt = 'pwsalt';
-  static const String _fullname = 'fullname';
+  static const String _fullnameKey = 'fullname';
 
   static const String _credentialsKey = 'credskey';
 
@@ -27,6 +27,7 @@ class PreferenceRepo {
 
   // cached, safe, backing values for non-async access to public pref values
   String? _username;
+  String? _fullname;
   int? _userId;
   String? _salt;
   DiscryptorUser? _user;
@@ -34,6 +35,8 @@ class PreferenceRepo {
   // public preferences access
   Future<String?> get username async =>
       _username ??= await _prefs.then((prefs) => prefs.getString(_usernameKey));
+  Future<String?> get fullname async =>
+      _fullname ??= await _prefs.then((prefs) => prefs.getString(_fullnameKey));
   Future<int?> get userId async =>
       _userId ??= await _prefs.then((prefs) => prefs.getInt(_useridKey));
   Future<String?> get salt async =>
@@ -51,11 +54,18 @@ class PreferenceRepo {
   Future<String?> get refreshToken async =>
       _secureStorage.read(key: _refreshTokenKey);
 
-  void clearCache() {
+  void clearPublicDataAndUser() {
     _user = null;
     _userId = null;
     _salt = null;
+    _fullname = null;
     _username = null;
+  }
+
+  void setPublicUserData(String fullname, String pwSalt, int userId) {
+    _prefs.then((prefs) => prefs.setInt(_useridKey, userId));
+    _prefs.then((prefs) => prefs.setString(_pwsalt, pwSalt));
+    _prefs.then((prefs) => prefs.setString(_fullnameKey, fullname));
   }
 
   Future<void> clearAuth() async {
@@ -66,7 +76,7 @@ class PreferenceRepo {
       prefs.remove(_userKey);
       prefs.remove(_credentialsKey);
       prefs.remove(_pwsalt);
-      prefs.remove(_fullname);
+      prefs.remove(_fullnameKey);
     });
   }
 
@@ -114,12 +124,6 @@ class PreferenceRepo {
 
   void setCredentials(Credentials creds) =>
       _prefs.then((prefs) => prefs.setString(_credentialsKey, creds.toJson()));
-
-  void setPublicUserData(String fullname, String pwSalt, int userId) {
-    _prefs.then((prefs) => prefs.setInt(_useridKey, userId));
-    _prefs.then((prefs) => prefs.setString(_pwsalt, pwSalt));
-    _prefs.then((prefs) => prefs.setString(_fullname, fullname));
-  }
 
   Future<void> setAuth(
       {required DiscryptorUser user,

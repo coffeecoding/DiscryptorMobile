@@ -57,7 +57,7 @@ class AuthCubit extends Cubit<AuthState> {
 
   void logout() {
     // todo: stop websocket, delete tokens etc
-    prefsRepo.clearCache();
+    prefsRepo.clearPublicDataAndUser();
     prefsRepo.clearAuth();
     emit(AuthState.unauthenticated());
   }

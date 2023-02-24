@@ -1,4 +1,5 @@
 import 'package:discryptor/cubits/auth/auth_cubit.dart';
+import 'package:discryptor/cubits/name_cubit/name_cubit.dart';
 import 'package:discryptor/main.dart';
 import 'package:discryptor/views/start/password.dart';
 import 'package:discryptor/views/start/start.dart';
@@ -25,11 +26,19 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    final ac = context.read<AuthCubit>();
-    ac.resumeAuth().then((authenticated) {
-      if (authenticated) {
-        DiscryptorApp.navigatorKey.currentState!
-            .pushAndRemoveUntil(PasswordScreen.route(), (route) => false);
+    final nc = context.read<NameCubit>();
+    nc.getUserFromPrefs().then((found) {
+      if (found) {
+        final ac = context.read<AuthCubit>();
+        ac.resumeAuth().then((authenticated) {
+          if (authenticated) {
+            DiscryptorApp.navigatorKey.currentState!
+                .pushAndRemoveUntil(PasswordScreen.route(), (route) => false);
+          } else {
+            DiscryptorApp.navigatorKey.currentState!
+                .pushAndRemoveUntil(StartScreen.route(), (route) => false);
+          }
+        });
       } else {
         DiscryptorApp.navigatorKey.currentState!
             .pushAndRemoveUntil(StartScreen.route(), (route) => false);

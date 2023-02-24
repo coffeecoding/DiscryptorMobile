@@ -56,7 +56,7 @@ class LoginCubit extends Cubit<LoginState> {
 
   /// Lock app behind password but don't clear auth data.
   void logoff() {
-    prefRepo.clearCache();
+    prefRepo.clearPublicDataAndUser();
     emit(
         state.copyWith(status: LoginStatus.initial, password: '', message: ''));
   }
