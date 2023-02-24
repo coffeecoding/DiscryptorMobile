@@ -86,6 +86,27 @@ class ChatScreen extends StatelessWidget {
                 },
                 child: Column(
                   children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 2),
+                              child: Icon(
+                                FluentIcons.shield_task_20_filled,
+                                color: Colors.grey.shade600,
+                                size: 14,
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            Text('End-to-End-Encrypted Chat',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
+                                    color: Colors.grey.shade600)),
+                          ]),
+                    ),
                     Expanded(
                         child: Padding(
                       padding: const EdgeInsets.all(8.0),
