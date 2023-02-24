@@ -74,10 +74,13 @@ class PasswordScreen extends StatelessWidget {
                                         height: 40,
                                         child: Center(child: Text('Unlock')))),
                             ElevatedButton(
-                                onPressed: () => DiscryptorApp
-                                    .navigatorKey.currentState!
-                                    .pushNamedAndRemoveUntil(
-                                        StartScreen.routeName, (route) => true),
+                                onPressed: () {
+                                  context.read<AuthCubit>().logout();
+                                  DiscryptorApp.navigatorKey.currentState!
+                                      .pushNamedAndRemoveUntil(
+                                          StartScreen.routeName,
+                                          (route) => true);
+                                },
                                 style: ButtonStyle(
                                     backgroundColor: MaterialStatePropertyAll(
                                         Theme.of(context)
@@ -85,7 +88,7 @@ class PasswordScreen extends StatelessWidget {
                                 child: const SizedBox(
                                     width: double.infinity,
                                     height: 40,
-                                    child: Center(child: Text('Back')))),
+                                    child: Center(child: Text('Switch User')))),
                             const SizedBox(height: 32),
                             Text(state.message,
                                 softWrap: true,

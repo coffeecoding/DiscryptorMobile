@@ -1,8 +1,11 @@
-import 'package:discryptor/views/home.dart';
+import 'package:discryptor/cubits/auth/auth_cubit.dart';
+import 'package:discryptor/main.dart';
+import 'package:discryptor/views/start/password.dart';
 import 'package:discryptor/views/start/start.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
   static const String routeName = '/splash';
@@ -15,9 +18,27 @@ class SplashScreen extends StatelessWidget {
   }
 
   @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    final ac = context.read<AuthCubit>();
+    ac.resumeAuth().then((authenticated) {
+      if (authenticated) {
+        DiscryptorApp.navigatorKey.currentState!
+            .pushAndRemoveUntil(PasswordScreen.route(), (route) => false);
+      } else {
+        DiscryptorApp.navigatorKey.currentState!
+            .pushAndRemoveUntil(StartScreen.route(), (route) => false);
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // Todo: read auth state from storage
-    bool authenticated = 1 + 2 == 5;
-    return authenticated ? const HomeScreen() : StartScreen();
+    return const Material(child: Center(child: Text('Resuming ...')));
   }
 }

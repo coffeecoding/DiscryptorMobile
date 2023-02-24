@@ -80,12 +80,12 @@ class HomeScreen extends StatelessWidget {
                       child: Center(
                           child: ElevatedButton(
                               onPressed: () {
-                                context.read<LoginCubit>().logout();
+                                context.read<LoginCubit>().logoff();
                                 DiscryptorApp.navigatorKey.currentState!
                                     .pushAndRemoveUntil(PasswordScreen.route(),
                                         (route) => false);
                               },
-                              child: const Text('Log out')))),
+                              child: const Text('Log off')))),
                 ],
               ),
       )),

@@ -54,14 +54,11 @@ class LoginCubit extends Cubit<LoginState> {
     }
   }
 
-  void logout() {
-    try {
-      authCubit.logout();
-      emit(state.copyWith(
-          status: LoginStatus.initial, password: '', message: ''));
-    } catch (e) {
-      // todo: handle
-    }
+  /// Lock app behind password but don't clear auth data.
+  void logoff() {
+    prefRepo.clearCache();
+    emit(
+        state.copyWith(status: LoginStatus.initial, password: '', message: ''));
   }
 
   bool validateForm() {
