@@ -1,5 +1,6 @@
 import 'package:discryptor/models/discryptor_user.dart';
 import 'package:discryptor/utils/crypto/crypto.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -103,8 +104,8 @@ class PreferenceRepo {
         print('Cannot decrypt key: salt not found');
         return false;
       }
-      String decryptedPrivateKeyXml =
-          await RFC2898Helper.decryptWithDerivedKey(pw, salt, encryptedKey);
+      String decryptedPrivateKeyXml = await compute(
+          RFC2898Helper.decryptWithDerivedKeyIsolate, [pw, salt, encryptedKey]);
       await _setPrivateKey(decryptedPrivateKeyXml);
       return true;
     } catch (e) {

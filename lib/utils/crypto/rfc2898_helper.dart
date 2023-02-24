@@ -80,4 +80,11 @@ class RFC2898Helper {
         decryptor.decryptBytes(Encrypted.fromBase64(cipherText), iv: aesIV);
     return utf8.decode(decrypted);
   }
+
+  static Future<String> decryptWithDerivedKeyIsolate(List<Object> args) async {
+    String password = args[0] as String;
+    String salt = args[1] as String;
+    String cipherKey = args[2] as String;
+    return await decryptWithDerivedKey(password, salt, cipherKey);
+  }
 }
