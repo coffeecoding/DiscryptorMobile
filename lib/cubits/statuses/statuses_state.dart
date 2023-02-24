@@ -20,8 +20,9 @@ class StatusesState extends Equatable {
 
   final Map<int, int> statuses;
 
+  // https://discordnet.dev/api/Discord.UserStatus.html
   int statusByUserId(int userId) =>
-      statuses.containsKey(userId) ? statuses[userId]! : 0;
+      statuses.containsKey(userId) ? statuses[userId]! : 4;
 
   @override
   List<Object> get props => [status, statuses];
