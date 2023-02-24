@@ -2,6 +2,7 @@ import 'package:discryptor/config/sample_data.dart';
 import 'package:discryptor/cubits/chat_list/chat_list_cubit.dart';
 import 'package:discryptor/cubits/cubits.dart';
 import 'package:discryptor/cubitvms/chat_vm.dart';
+import 'package:discryptor/cubitvms/user_vm.dart';
 import 'package:discryptor/main.dart';
 import 'package:discryptor/views/chat/chat.dart';
 import 'package:discryptor/views/start/password.dart';
@@ -61,27 +62,7 @@ class HomeScreen extends StatelessWidget {
                               padding: const EdgeInsets.all(8),
                               child: Row(
                                 children: [
-                                  Stack(
-                                    children: [
-                                      CircleAvatar(
-                                        radius: 20,
-                                        backgroundImage: NetworkImage(state
-                                            .chats[index].userState.avatarUrl),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 27, left: 27),
-                                        child: Container(
-                                          width: 14,
-                                          height: 14,
-                                          decoration: BoxDecoration(
-                                              border: Border.all(width: 3),
-                                              color: Colors.green,
-                                              shape: BoxShape.circle),
-                                        ),
-                                      )
-                                    ],
-                                  ),
+                                  AvatarWithStatus(state.chats[index].userVM),
                                   const SizedBox(width: 8),
                                   Expanded(
                                     child: Text(SampleData
@@ -105,6 +86,48 @@ class HomeScreen extends StatelessWidget {
                 ],
               ),
       )),
+    );
+  }
+}
+
+const colorToStatus = {
+  0: Colors.orange,
+  1: Colors.red,
+  2: Colors.orange,
+  3: Colors.grey,
+  4: Colors.grey,
+  5: Colors.green
+};
+
+class AvatarWithStatus extends StatelessWidget {
+  const AvatarWithStatus(this.userVM, {super.key});
+
+  final UserViewModel userVM;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        CircleAvatar(
+          radius: 20,
+          backgroundImage: NetworkImage(userVM.avatarUrl),
+        ),
+        BlocBuilder<StatusesCubit, StatusesState>(
+          builder: (context, state) {
+            return Padding(
+              padding: const EdgeInsets.only(top: 27, left: 27),
+              child: Container(
+                width: 14,
+                height: 14,
+                decoration: BoxDecoration(
+                    border: Border.all(width: 3),
+                    color: colorToStatus[state.statusByUserId(userVM.user.id)],
+                    shape: BoxShape.circle),
+              ),
+            );
+          },
+        )
+      ],
     );
   }
 }

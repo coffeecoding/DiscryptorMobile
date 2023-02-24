@@ -12,7 +12,7 @@ enum ChatStatus { initial, busyLoading, busySending, error, success }
 
 class ChatViewModel extends Equatable {
   ChatViewModel(
-    this.userState, {
+    this.userVM, {
     this.status = ChatStatus.initial,
     this.messages = const <MessageViewModel>[],
     this.message = '',
@@ -21,21 +21,21 @@ class ChatViewModel extends Equatable {
 
   ChatViewModel copyWith({
     ChatStatus? status,
-    UserViewModel? userState,
+    UserViewModel? userVM,
     int? userStatus,
     String? message,
     String? error,
   }) =>
       ChatViewModel(
-        userState ?? this.userState,
+        userVM ?? this.userVM,
         status: status ?? this.status,
         message: message ?? this.message,
         error: error ?? this.error,
       );
 
   void decryptSymmetricKey(String privKey) {
-    keyBase64 = base64.encode(
-        RSAHelper.rsaDecrypt(userState.user.encryptedSymmKey!, privKey));
+    keyBase64 = base64
+        .encode(RSAHelper.rsaDecrypt(userVM.user.encryptedSymmKey!, privKey));
   }
 
   void addMessageInOrder(DiscryptorMessage msg, bool isSelfSender) {
@@ -53,11 +53,11 @@ class ChatViewModel extends Equatable {
   late String? keyBase64;
 
   final ChatStatus status;
-  final UserViewModel userState;
+  final UserViewModel userVM;
   List<MessageViewModel> messages;
   final String message;
   final String error;
 
   @override
-  List<Object> get props => [status, userState, message, error, messages];
+  List<Object> get props => [status, userVM, message, error, messages];
 }

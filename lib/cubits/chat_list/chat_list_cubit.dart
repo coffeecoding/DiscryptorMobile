@@ -52,8 +52,8 @@ class ChatListCubit extends Cubit<ChatListState> {
 
       final isSelfSender = self.id == senderId;
 
-      ChatViewModel? chatVM = state.chats.firstWhereOrNull((c) =>
-          c.userState.user.id == (isSelfSender ? recipientId : senderId));
+      ChatViewModel? chatVM = state.chats.firstWhereOrNull(
+          (c) => c.userVM.user.id == (isSelfSender ? recipientId : senderId));
 
       if (chatVM == null) return null; // Todo: log
 
@@ -68,7 +68,7 @@ class ChatListCubit extends Cubit<ChatListState> {
           recipientId: recipientId,
           content: decryptedMsg,
           authorName:
-              isSelfSender ? self.username : chatVM.userState.user.username);
+              isSelfSender ? self.username : chatVM.userVM.user.username);
 
       if (inOrder) {
         chatVM.addMessageInOrder(receivedMsg, isSelfSender);

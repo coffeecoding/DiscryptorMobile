@@ -51,15 +51,15 @@ class ChatScreen extends StatelessWidget {
                   child: Container(
                       height: 1, color: Theme.of(context).dividerColor),
                 ),
-                title: Text(state.chat!.userState.user.username),
+                title: Text(state.chat!.userVM.user.username),
               ),
               body: RefreshIndicator(
                 onRefresh: () {
                   final clc = context.read<ChatListCubit>();
                   final scc = context.read<SelectedChatCubit>();
                   clc.loadChats().then((_) {
-                    scc.selectChat(clc.state.chats.firstWhere((c) =>
-                        c.userState.user.id == state.chat!.userState.user.id));
+                    scc.selectChat(clc.state.chats.firstWhere(
+                        (c) => c.userVM.user.id == state.chat!.userVM.user.id));
                     scc.refresh();
                   });
                   return Future.value();
@@ -82,14 +82,14 @@ class ChatScreen extends StatelessWidget {
                                 ? ChatMessage(state.messages[i],
                                     user: (state.messages[i].isSelfSender
                                             ? self
-                                            : state.chat!.userState.user)
+                                            : state.chat!.userVM.user)
                                         as IDiscryptorUser)
                                 : isPreviousSame
                                     ? ChatMessage(state.messages[i])
                                     : ChatMessage(state.messages[i],
                                         user: (state.messages[i].isSelfSender
                                                 ? self
-                                                : state.chat!.userState.user)
+                                                : state.chat!.userVM.user)
                                             as IDiscryptorUser,
                                         isPreviousSelf: false);
                           }),

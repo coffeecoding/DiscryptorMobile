@@ -40,7 +40,7 @@ class SelectedChatCubit extends Cubit<SelectedChatState> {
       // final timestamp = DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000;
       ChatMessage msg = crypto.encryptMessage(message, state.chat!.keyBase64!);
       final senderId = await prefRepo.userId;
-      final recipientId = state.chat!.userState.user.id;
+      final recipientId = state.chat!.userVM.user.id;
       final serialized = 'M.$senderId.$recipientId.${msg.iv}.${msg.message}';
       final re = await apiRepo.sendMessage(recipientId, serialized);
       if (!re.isSuccess) {
@@ -53,7 +53,7 @@ class SelectedChatCubit extends Cubit<SelectedChatState> {
           content: message,
           authorId: senderId,
           authorName: await prefRepo.username,
-          recipientId: state.chat!.userState.user.id);
+          recipientId: state.chat!.userVM.user.id);
       state.chat!.addMessageInOrder(rcvdMsg, true);
       emit(state.copyWith(
           status: SelectedChatStatus.success, message: '', error: ''));

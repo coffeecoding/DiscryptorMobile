@@ -20,6 +20,9 @@ class StatusesState extends Equatable {
 
   final Map<int, int> statuses;
 
+  int statusByUserId(int userId) =>
+      statuses.containsKey(userId) ? statuses[userId]! : 0;
+
   @override
   List<Object> get props => [status, statuses];
 }
