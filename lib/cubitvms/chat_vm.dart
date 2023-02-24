@@ -1,12 +1,12 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-import 'package:discryptor/models/discryptor_message.dart';
-import 'package:discryptor/utils/crypto/crypto.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:discryptor/cubitvms/message_vm.dart';
 import 'package:discryptor/cubitvms/user_vm.dart';
+import 'package:discryptor/models/discryptor_message.dart';
+import 'package:discryptor/utils/crypto/crypto.dart';
 
 enum ChatStatus { initial, busyLoading, busySending, error, success }
 
@@ -18,6 +18,20 @@ class ChatViewModel extends Equatable {
     this.message = '',
     this.error = '',
   });
+
+  ChatViewModel copyWith({
+    ChatStatus? status,
+    UserViewModel? userState,
+    int? userStatus,
+    String? message,
+    String? error,
+  }) =>
+      ChatViewModel(
+        userState ?? this.userState,
+        status: status ?? this.status,
+        message: message ?? this.message,
+        error: error ?? this.error,
+      );
 
   void decryptSymmetricKey(String privKey) {
     keyBase64 = base64.encode(
@@ -44,5 +58,6 @@ class ChatViewModel extends Equatable {
   final String message;
   final String error;
 
-  List<Object?> get props => [status, userState, message, error, messages];
+  @override
+  List<Object> get props => [status, userState, message, error, messages];
 }

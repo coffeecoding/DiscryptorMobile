@@ -61,10 +61,26 @@ class HomeScreen extends StatelessWidget {
                               padding: const EdgeInsets.all(8),
                               child: Row(
                                 children: [
-                                  CircleAvatar(
-                                    radius: 20,
-                                    backgroundImage: NetworkImage(SampleData
-                                        .sampleContacts[index].usedAvatarUrl),
+                                  Stack(
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 20,
+                                        backgroundImage: NetworkImage(state
+                                            .chats[index].userState.avatarUrl),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            top: 27, left: 27),
+                                        child: Container(
+                                          width: 14,
+                                          height: 14,
+                                          decoration: BoxDecoration(
+                                              border: Border.all(width: 3),
+                                              color: Colors.green,
+                                              shape: BoxShape.circle),
+                                        ),
+                                      )
+                                    ],
                                   ),
                                   const SizedBox(width: 8),
                                   Expanded(
