@@ -53,22 +53,21 @@ class ChatScreen extends StatelessWidget {
                 ),
                 title: Text(state.chat!.userState.user.username),
               ),
-              body: Column(
-                children: [
-                  Expanded(
-                      child: RefreshIndicator(
-                    onRefresh: () {
-                      final clc = context.read<ChatListCubit>();
-                      final scc = context.read<SelectedChatCubit>();
-                      clc.loadChats().then((_) {
-                        scc.selectChat(clc.state.chats.firstWhere((c) =>
-                            c.userState.user.id ==
-                            state.chat!.userState.user.id));
-                        scc.refresh();
-                      });
-                      return Future.value();
-                    },
-                    child: Padding(
+              body: RefreshIndicator(
+                onRefresh: () {
+                  final clc = context.read<ChatListCubit>();
+                  final scc = context.read<SelectedChatCubit>();
+                  clc.loadChats().then((_) {
+                    scc.selectChat(clc.state.chats.firstWhere((c) =>
+                        c.userState.user.id == state.chat!.userState.user.id));
+                    scc.refresh();
+                  });
+                  return Future.value();
+                },
+                child: Column(
+                  children: [
+                    Expanded(
+                        child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: ListView.builder(
                           shrinkWrap: true,
@@ -94,59 +93,62 @@ class ChatScreen extends StatelessWidget {
                                             as IDiscryptorUser,
                                         isPreviousSelf: false);
                           }),
-                    ),
-                  )),
-                  const Divider(height: 1.0),
-                  StatefulBuilder(
-                    builder: (context, setState) => Container(
-                        decoration: BoxDecoration(
-                            color: Theme.of(context).scaffoldBackgroundColor),
-                        child: Container(
-                            margin: const EdgeInsets.only(left: 16, right: 8),
-                            child: Row(
-                              children: [
-                                Flexible(
-                                  child: Material(
-                                      child: TextField(
-                                          controller: ctr,
-                                          onChanged: (val) {
-                                            context
-                                                .read<SelectedChatCubit>()
-                                                .messageFieldChanged(val);
-                                            setState(() => _isComposing =
-                                                val.isEmpty ? false : true);
-                                          },
-                                          onSubmitted: (val) {},
-                                          maxLines: 1,
-                                          decoration:
-                                              const InputDecoration.collapsed(
-                                                  hintText: 'Compose ...'))),
-                                ),
-                                IconButton(
-                                    onPressed: !_isComposing ||
-                                            state.status ==
-                                                SelectedChatStatus.busySending
-                                        ? null
-                                        : () => context
-                                                .read<SelectedChatCubit>()
-                                                .sendMessage(ctr.text)
-                                                .then((success) {
-                                              if (success) {
-                                                ctr.text = '';
-                                                SchedulerBinding.instance
-                                                    .addPostFrameCallback((_) {
-                                                  sctr.jumpTo(sctr.position
-                                                      .maxScrollExtent);
-                                                });
-                                              }
-                                            }),
-                                    splashRadius: 1,
-                                    icon:
-                                        const Icon(FluentIcons.send_20_filled))
-                              ],
-                            ))),
-                  )
-                ],
+                    )),
+                    const Divider(height: 1.0),
+                    StatefulBuilder(
+                      builder: (context, setState) => Container(
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor),
+                          child: Container(
+                              margin: const EdgeInsets.only(left: 16, right: 8),
+                              child: Row(
+                                children: [
+                                  Flexible(
+                                    child: Material(
+                                        child: TextField(
+                                            controller: ctr,
+                                            onChanged: (val) {
+                                              context
+                                                  .read<SelectedChatCubit>()
+                                                  .messageFieldChanged(val);
+                                              setState(() => _isComposing =
+                                                  val.isEmpty ? false : true);
+                                            },
+                                            onSubmitted: (val) {},
+                                            maxLines: 1,
+                                            decoration:
+                                                const InputDecoration.collapsed(
+                                                    hintText: 'Compose ...'))),
+                                  ),
+                                  IconButton(
+                                      onPressed: !_isComposing ||
+                                              state.status ==
+                                                  SelectedChatStatus
+                                                      .busySending ||
+                                              ctr.text.isEmpty
+                                          ? null
+                                          : () => context
+                                                  .read<SelectedChatCubit>()
+                                                  .sendMessage(ctr.text)
+                                                  .then((success) {
+                                                if (success) {
+                                                  ctr.text = '';
+                                                  SchedulerBinding.instance
+                                                      .addPostFrameCallback(
+                                                          (_) {
+                                                    sctr.jumpTo(sctr.position
+                                                        .maxScrollExtent);
+                                                  });
+                                                }
+                                              }),
+                                      splashRadius: 1,
+                                      icon: const Icon(
+                                          FluentIcons.send_20_filled))
+                                ],
+                              ))),
+                    )
+                  ],
+                ),
               ));
         },
       ),
@@ -177,7 +179,7 @@ class ChatMessage extends StatelessWidget {
         Expanded(
             child: user == null
                 ? Padding(
-                    padding: const EdgeInsets.only(top: 2),
+                    padding: const EdgeInsets.only(top: 4),
                     child: Text(messageVM.message.content),
                   )
                 : Column(
@@ -198,7 +200,7 @@ class ChatMessage extends StatelessWidget {
                                   color: Colors.white54, fontSize: 10),
                             )
                           ]),
-                      const SizedBox(height: 2),
+                      const SizedBox(height: 5),
                       Text(messageVM.message.content)
                     ],
                   ))
