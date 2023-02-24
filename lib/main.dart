@@ -1,4 +1,3 @@
-import 'package:discryptor/services/crypto_service.dart';
 import 'package:discryptor/views/custom_router.dart';
 import 'package:discryptor/config/locator.dart';
 import 'package:discryptor/repos/repos.dart';

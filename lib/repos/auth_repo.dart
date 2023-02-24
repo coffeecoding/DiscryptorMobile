@@ -25,13 +25,18 @@ class AuthRepo {
       await _net.socket.start();
       if (_net.socket.state == HubConnectionState.Connected) {
         _net.socket.on('Disconnect', (_) => _net.socket.stop());
-        _net.socket.onreconnecting(
-            ({error}) => print('Socket reconnecting due to error $error'));
+        _net.socket.onreconnecting(({error}) {
+          print('Socket reconnecting due to error $error');
+        });
         _net.socket.onreconnected(({connectionId}) async {
-          print('Socket reconnected with id $connectionId!');
-          final tk = await _prefsRepo.token;
-          if (tk != null) {
-            _net.socket.invoke('ConnectClient', args: [tk]);
+          try {
+            print('Socket reconnected with id $connectionId!');
+            final tk = await _prefsRepo.token;
+            if (tk != null) {
+              _net.socket.invoke('ConnectClient', args: [tk]);
+            }
+          } catch (e) {
+            print('OnReconnected error: $e');
           }
         });
 
