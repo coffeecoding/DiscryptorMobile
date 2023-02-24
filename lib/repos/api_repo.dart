@@ -5,7 +5,6 @@ import 'package:discryptor/extensions/http_ext.dart';
 import 'package:discryptor/models/key_value_pair.dart';
 import 'package:discryptor/models/models.dart';
 import 'package:discryptor/services/network_service.dart';
-import 'package:signalr_netcore/signalr_client.dart';
 
 import 'auth_repo.dart';
 

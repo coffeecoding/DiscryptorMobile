@@ -12,6 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   bloc: ^8.1.0
+  collection:
   cryptography: ^2.0.5
   dio: ^4.0.6
   encrypt: ^5.0.1

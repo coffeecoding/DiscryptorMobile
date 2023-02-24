@@ -46,11 +46,8 @@ class DiscryptorApp extends StatelessWidget {
             lazy: false, create: ((context) => SelectedChatCubit())),
         BlocProvider<ChatListCubit>(
           lazy: false,
-          create: ((context) => ChatListCubit(
-              context.read<SelectedChatCubit>(),
-              locator.get<ApiRepo>(),
-              locator.get<PreferenceRepo>(),
-              locator.get<CryptoService>())),
+          create: ((context) =>
+              ChatListCubit(context.read<SelectedChatCubit>())),
         ),
         BlocProvider<AuthCubit>(
             lazy: false,

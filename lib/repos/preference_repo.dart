@@ -27,23 +27,23 @@ class PreferenceRepo {
   final Future<SharedPreferences> _prefs;
 
   // cached, safe, backing values for non-async access to public pref values
-  String? _username;
-  String? _fullname;
-  int? _userId;
-  String? _salt;
-  DiscryptorUser? _user;
+  String? cachedUsername;
+  String? cachedFullname;
+  int? cachedUserId;
+  String? cachedSalt;
+  DiscryptorUser? cachedUser;
 
   // public preferences access
-  Future<String?> get username async =>
-      _username ??= await _prefs.then((prefs) => prefs.getString(_usernameKey));
-  Future<String?> get fullname async =>
-      _fullname ??= await _prefs.then((prefs) => prefs.getString(_fullnameKey));
+  Future<String?> get username async => cachedUsername ??=
+      await _prefs.then((prefs) => prefs.getString(_usernameKey));
+  Future<String?> get fullname async => cachedFullname ??=
+      await _prefs.then((prefs) => prefs.getString(_fullnameKey));
   Future<int?> get userId async =>
-      _userId ??= await _prefs.then((prefs) => prefs.getInt(_useridKey));
+      cachedUserId ??= await _prefs.then((prefs) => prefs.getInt(_useridKey));
   Future<String?> get salt async =>
-      _salt ??= await _prefs.then((prefs) => prefs.getString(_pwsalt));
+      cachedSalt ??= await _prefs.then((prefs) => prefs.getString(_pwsalt));
   Future<DiscryptorUser?> get user async =>
-      _user ??= await _prefs.then((SharedPreferences prefs) {
+      cachedUser ??= await _prefs.then((SharedPreferences prefs) {
         String? userJson = prefs.getString(_userKey);
         if (userJson == null) return null;
         return DiscryptorUser.fromJson(userJson);
@@ -56,11 +56,11 @@ class PreferenceRepo {
       _secureStorage.read(key: _refreshTokenKey);
 
   void clearPublicDataAndUser() {
-    _user = null;
-    _userId = null;
-    _salt = null;
-    _fullname = null;
-    _username = null;
+    cachedUser = null;
+    cachedUserId = null;
+    cachedSalt = null;
+    cachedFullname = null;
+    cachedUsername = null;
   }
 
   void setPublicUserData(String fullname, String pwSalt, int userId) {
