@@ -62,11 +62,8 @@ class DiscryptorApp extends StatelessWidget {
         ),
         BlocProvider<LoginCubit>(
             lazy: false,
-            create: (context) => LoginCubit(
-                context.read<AuthCubit>(),
-                context.read<AppCubit>(),
-                locator.get<AuthRepo>(),
-                locator.get<PreferenceRepo>())),
+            create: (context) => LoginCubit(context.read<AuthCubit>(),
+                context.read<AppCubit>(), context.read<StatusesCubit>())),
       ],
       child: MaterialApp(
         title: 'Discryptor',

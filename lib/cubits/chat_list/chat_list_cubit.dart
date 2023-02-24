@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:discryptor/config/locator.dart';
+import 'package:discryptor/cubits/cubits.dart';
 import 'package:discryptor/cubits/selected_chat/selected_chat_cubit.dart';
 import 'package:discryptor/cubitvms/chat_vm.dart';
 import 'package:discryptor/cubitvms/user_vm.dart';
@@ -14,9 +15,8 @@ import 'package:collection/collection.dart';
 part 'chat_list_state.dart';
 
 class ChatListCubit extends Cubit<ChatListState> {
-  ChatListCubit(
-    this.selectedChatCubit,
-  )   : apiRepo = locator.get<ApiRepo>(),
+  ChatListCubit(this.selectedChatCubit)
+      : apiRepo = locator.get<ApiRepo>(),
         prefRepo = locator.get<PreferenceRepo>(),
         crypto = locator.get<CryptoService>(),
         net = locator.get<NetworkService>(),
@@ -97,7 +97,7 @@ class ChatListCubit extends Cubit<ChatListState> {
       chatVMs.forEach((c) => c.decryptSymmetricKey(privKey!));
       emit(state.copyWith(chats: chatVMs));
       re.content!.messages.forEach(handleReceivedMessage);
-      emit(state.copyWith(status: ChatListStatus.success, chats: chatVMs));
+      emit(state.copyWith(status: ChatListStatus.success));
     } catch (e) {
       emit(state.copyWith(status: ChatListStatus.error, error: '$e'));
     }

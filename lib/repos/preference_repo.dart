@@ -67,6 +67,8 @@ class PreferenceRepo {
     _prefs.then((prefs) => prefs.setInt(_useridKey, userId));
     _prefs.then((prefs) => prefs.setString(_pwsalt, pwSalt));
     _prefs.then((prefs) => prefs.setString(_fullnameKey, fullname));
+    cachedUserId = userId;
+    cachedUsername = fullname.split('#')[0];
   }
 
   Future<void> clearAuth() async {
@@ -125,6 +127,11 @@ class PreferenceRepo {
 
   void setCredentials(Credentials creds) =>
       _prefs.then((prefs) => prefs.setString(_credentialsKey, creds.toJson()));
+
+  void setUser(DiscryptorUser user) {
+    _prefs.then((prefs) => prefs.setString(_userKey, user.toJson()));
+    cachedUser = user;
+  }
 
   Future<void> setAuth(
       {required DiscryptorUser user,
