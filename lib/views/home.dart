@@ -1,12 +1,9 @@
 import 'package:discryptor/config/sample_data.dart';
-import 'package:discryptor/cubits/chat_list/chat_list_cubit.dart';
 import 'package:discryptor/cubits/cubits.dart';
-import 'package:discryptor/cubitvms/chat_vm.dart';
 import 'package:discryptor/cubitvms/user_vm.dart';
 import 'package:discryptor/main.dart';
 import 'package:discryptor/views/chat/chat.dart';
 import 'package:discryptor/views/start/password.dart';
-import 'package:discryptor/views/start/start.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -115,10 +112,10 @@ class AvatarWithStatus extends StatelessWidget {
         BlocBuilder<StatusesCubit, StatusesState>(
           builder: (context, state) {
             return Padding(
-              padding: const EdgeInsets.only(top: 27, left: 27),
+              padding: const EdgeInsets.only(top: 26, left: 26),
               child: Container(
-                width: 14,
-                height: 14,
+                width: 16,
+                height: 16,
                 decoration: BoxDecoration(
                     border: Border.all(width: 3),
                     color: colorToStatus[state.statusByUserId(userVM.user.id)],
