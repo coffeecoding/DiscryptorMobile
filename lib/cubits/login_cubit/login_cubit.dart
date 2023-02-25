@@ -73,6 +73,7 @@ class LoginCubit extends Cubit<LoginState> {
         return;
       }
       _startStatusFetcher();
+      await statusesCubit.getStatuses();
       emit(state.copyWith(status: LoginStatus.loggedIn));
       appCubit.retrieveData();
     } catch (e) {

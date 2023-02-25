@@ -63,8 +63,8 @@ class HomeScreen extends StatelessWidget {
                                   AvatarWithStatus(state.chats[index].userVM),
                                   const SizedBox(width: 8),
                                   Expanded(
-                                    child: Text(SampleData
-                                        .sampleContacts[index].username),
+                                    child: Text(state
+                                        .chats[index].userVM.user.username),
                                   )
                                 ],
                               ))),

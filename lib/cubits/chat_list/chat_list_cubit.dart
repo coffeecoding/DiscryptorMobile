@@ -21,8 +21,11 @@ class ChatListCubit extends Cubit<ChatListState> {
         crypto = locator.get<CryptoService>(),
         net = locator.get<NetworkService>(),
         super(const ChatListState()) {
-    net.socket.on('ReceiveMessage',
-        (o) => handleReceivedMessage(o![0] as DiscryptorMessage));
+    net.socket.on(
+        'ReceiveMessage',
+        (o) => handleReceivedMessage(
+                DiscryptorMessage.fromMap(o![0] as Map<String, dynamic>))
+            .then((_) => selectedChatCubit.refresh()));
     net.socket.on('UpdateRelationship',
         (o) => print("Placeholder for updating relationsip"));
     net.socket
