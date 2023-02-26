@@ -1,5 +1,7 @@
 # Discryptor Mobile
 
+[![](https://dcbadge.vercel.app/api/server/8PgCfKC6G5)](https://discord.gg/8PgCfKC6G5)
+
 Cross platform mobile client for Discryptor, an End-to-End-Encryption solution for Discord private chat.
 More info on <https://www.discryptor.io>.
 
