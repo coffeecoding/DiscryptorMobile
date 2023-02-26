@@ -1,10 +1,23 @@
-# Discryptor
+# Discryptor Mobile
 
 Cross platform mobile client for Discryptor, an End-to-End-Encryption solution for Discord private chat.
-More info can be found on <https://www.discryptor.io>.
+More info on <https://www.discryptor.io>.
 
-## Roadmap
+## State of the project
 
-- [x] Set up boilerplate
-- [ ] Login and authentication with server
-- [ ] Retrieval and decryption of messages
+The project is currently under development. The following is a semi-accurate roadmap of feature development:
+
+- [x] Authentication and Authorization
+- [x] Sending and receiving messages of previously added contacts
+- [ ] Adding and removing (unfriending) users
+- [ ] Rich content messages
+- [ ] Emoji support
+- [ ] Message attachments
+
+## How to run
+
+Simply run `flutter pub get` and then run the app on your device using VS Code or Android Studio.
+
+## License statement
+
+No license is currently granted for this project.
