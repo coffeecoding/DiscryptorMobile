@@ -21,3 +21,7 @@ Simply run `flutter pub get` and then run the app on your device using VS Code o
 ## License statement
 
 No license is currently granted for this project.
+
+## Support
+
+Please visit <http://discryptor.io> to support this project.
