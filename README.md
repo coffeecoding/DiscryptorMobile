@@ -21,3 +21,7 @@ Simply run `flutter pub get` and then run the app on your device using VS Code o
 ## License statement
 
 No license is currently granted for the source code of this project. This may or may not change in the future.
+
+## Contribute
+
+Please join our official [Discord Channel](https://discord.gg/8PgCfKC6G5) so that we can chat about working together to help this project thrive.
