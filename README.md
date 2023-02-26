@@ -11,7 +11,7 @@ The project is currently under development. The following is a semi-accurate roa
 
 - [x] Authentication and Authorization
 - [x] Sending and receiving messages of previously added contacts
-- [ ] Adding and removing (unfriending) users
+- [ ] Managing user relationships
 - [ ] Rich content messages
 - [ ] Emoji support
 - [ ] Message attachments
