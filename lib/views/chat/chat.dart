@@ -1,12 +1,10 @@
-import 'package:discryptor/cubits/auth/auth_cubit.dart';
-import 'package:discryptor/cubits/chat_list/chat_list_cubit.dart';
 import 'package:discryptor/cubits/cubits.dart';
-import 'package:discryptor/cubits/selected_chat/selected_chat_cubit.dart';
 import 'package:discryptor/cubitvms/message_vm.dart';
 import 'package:discryptor/main.dart';
 import 'package:discryptor/models/discryptor_user.dart';
 import 'package:discryptor/models/idiscryptor_user.dart';
 import 'package:discryptor/views/common/status.dart';
+import 'package:discryptor/views/profile/profile.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -67,6 +65,7 @@ class ChatScreen extends StatelessWidget {
                       child: BlocBuilder<StatusesCubit, StatusesState>(
                           builder: (context, st) => StatusIndicator(
                               showBorder: false,
+                              size: 10,
                               discordStatus: st
                                   .statusByUserId(state.chat!.userVM.user.id))),
                     )
@@ -212,9 +211,16 @@ class ChatMessage extends StatelessWidget {
       child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
         user == null
             ? const SizedBox(width: 40)
-            : CircleAvatar(
-                radius: 20,
-                backgroundImage: NetworkImage(user!.usedAvatarUrl),
+            : GestureDetector(
+                onTap: () {
+                  context.read<ProfileCubit>().selectUser(user!);
+                  DiscryptorApp.navigatorKey.currentState!
+                      .push(ProfileScreen.route());
+                },
+                child: CircleAvatar(
+                  radius: 20,
+                  backgroundImage: NetworkImage(user!.getUsedAvatarUrl),
+                ),
               ),
         const SizedBox(width: 12),
         Expanded(

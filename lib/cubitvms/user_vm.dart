@@ -11,7 +11,7 @@ class UserViewModel extends Equatable {
   final DiscryptorUserWithRelationship user;
   final String error;
 
-  String get avatarUrl => user.usedAvatarUrl;
+  String get avatarUrl => user.getUsedAvatarUrl;
   String get fullname => user.fullname;
   String get hashDiscriminator => '#${user.discriminator}';
   bool get hasRelationship =>

@@ -8,3 +8,4 @@ export 'name_cubit/name_cubit.dart';
 export 'invite/invite_cubit.dart';
 export 'register/register_cubit.dart';
 export 'statuses/statuses_cubit.dart';
+export 'profile/profile_cubit.dart';

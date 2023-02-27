@@ -55,8 +55,15 @@ class DiscryptorUser extends Equatable with IDiscryptorUser {
   }
 
   @override
-  String get usedAvatarUrl => avatarUrl.isEmpty ? defaultAvatarUrl : avatarUrl;
+  String get getUsedAvatarUrl =>
+      avatarUrl.isEmpty ? defaultAvatarUrl : avatarUrl;
   String get fullname => '$username#$discriminator';
+  @override
+  int get getId => id;
+  @override
+  String get getDiscriminator => discriminator;
+  @override
+  int get getCreatedAt => createdAt;
 
   DiscryptorUser copyWith({
     int? id,

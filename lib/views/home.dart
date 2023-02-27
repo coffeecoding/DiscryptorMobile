@@ -1,9 +1,8 @@
-import 'package:discryptor/config/sample_data.dart';
 import 'package:discryptor/cubits/cubits.dart';
-import 'package:discryptor/cubitvms/user_vm.dart';
 import 'package:discryptor/main.dart';
 import 'package:discryptor/views/chat/chat.dart';
-import 'package:discryptor/views/common/status.dart';
+import 'package:discryptor/views/common/avatar_with_status.dart';
+import 'package:discryptor/views/profile/profile.dart';
 import 'package:discryptor/views/start/password.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
@@ -60,7 +59,14 @@ class HomeScreen extends StatelessWidget {
                               padding: const EdgeInsets.all(8),
                               child: Row(
                                 children: [
-                                  AvatarWithStatus(state.chats[index].userVM),
+                                  AvatarWithStatus(
+                                      state.chats[index].userVM.user,
+                                      onTap: () {
+                                    context.read<ProfileCubit>().selectUser(
+                                        state.chats[index].userVM.user);
+                                    DiscryptorApp.navigatorKey.currentState!
+                                        .push(ProfileScreen.route());
+                                  }),
                                   const SizedBox(width: 8),
                                   Expanded(
                                     child: Text(state
@@ -84,32 +90,6 @@ class HomeScreen extends StatelessWidget {
                 ],
               ),
       )),
-    );
-  }
-}
-
-class AvatarWithStatus extends StatelessWidget {
-  const AvatarWithStatus(this.userVM, {super.key});
-
-  final UserViewModel userVM;
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        CircleAvatar(
-          radius: 20,
-          backgroundImage: NetworkImage(userVM.avatarUrl),
-        ),
-        BlocBuilder<StatusesCubit, StatusesState>(
-          builder: (context, state) {
-            return Padding(
-                padding: const EdgeInsets.only(top: 26, left: 26),
-                child: StatusIndicator(
-                    discordStatus: state.statusByUserId(userVM.user.id)));
-          },
-        )
-      ],
     );
   }
 }
