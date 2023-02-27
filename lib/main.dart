@@ -37,6 +37,10 @@ class DiscryptorApp extends StatelessWidget {
           lazy: false,
           create: (context) => ProfileCubit(),
         ),
+        BlocProvider<AddCubit>(
+          lazy: false,
+          create: (context) => AddCubit(),
+        ),
         BlocProvider<ChallengeCubit>(
             lazy: false,
             create: (context) => ChallengeCubit(locator.get<AuthRepo>())),

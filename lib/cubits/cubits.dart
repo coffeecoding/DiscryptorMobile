@@ -9,3 +9,4 @@ export 'invite/invite_cubit.dart';
 export 'register/register_cubit.dart';
 export 'statuses/statuses_cubit.dart';
 export 'profile/profile_cubit.dart';
+export 'add/add_cubit.dart';

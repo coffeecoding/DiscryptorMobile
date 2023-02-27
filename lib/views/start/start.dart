@@ -83,8 +83,8 @@ class StartScreen extends StatelessWidget {
                             Text(state.message,
                                 softWrap: true,
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: Colors.deepOrange.shade700)),
+                                style:
+                                    TextStyle(color: Colors.orange.shade700)),
                           ],
                         )))),
               ]),
