@@ -23,7 +23,8 @@ class PasswordScreen extends StatelessWidget {
     final TextEditingController passwordCtr = TextEditingController();
     return BlocConsumer<LoginCubit, LoginState>(
         listener: (context, state) async {
-          DiscryptorApp.navigatorKey.currentState!.push(HomeScreen.route());
+          DiscryptorApp.navigatorKey.currentState!
+              .pushAndRemoveUntil(HomeScreen.route(), (_) => false);
         },
         listenWhen: (context, state) => state.status == LoginStatus.loggedIn,
         builder: (context, state) => Material(
