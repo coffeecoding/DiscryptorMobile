@@ -45,7 +45,6 @@ class BaseDialog extends StatelessWidget {
             ),
             const SizedBox(height: 24),
             child,
-            const SizedBox(height: 16),
           ],
         ),
       ),

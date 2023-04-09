@@ -118,7 +118,7 @@ class ChatListItem extends StatelessWidget {
         elevation: 2.0,
         padding: const EdgeInsets.only(left: 16, right: 8, top: 8, bottom: 8),
         child: Opacity(
-          opacity: relStatus == RelationshipStatus.accepted ? 1 : 0.4,
+          opacity: relStatus == RelationshipStatus.accepted ? 1 : 0.5,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -146,12 +146,46 @@ class ChatListItem extends StatelessWidget {
               if (relStatus != RelationshipStatus.accepted)
                 IconButton(
                     padding: EdgeInsets.zero,
-                    splashRadius: 24,
-                    onPressed: onRelationshipButtonPressed,
-                    color: Colors.white70,
+                    splashRadius: 28,
+                    onPressed: () async {
+                      final dlg = CustomDialog(
+                        child: BaseDialog(
+                          title: 'Confirm action',
+                          child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Text(
+                                  "${relStatus == RelationshipStatus.initiatedBySelf ? 'Revoke friend request with' : 'Accept friend request from'} user ${chatVM.userVM.user.username}?",
+                                ),
+                                const SizedBox(height: 32),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    TextButton(
+                                        onPressed: () {},
+                                        child: const Text(
+                                          'Close',
+                                          style: TextStyle(color: Colors.white),
+                                        )),
+                                    const SizedBox(width: 8),
+                                    ElevatedButton(
+                                        onPressed: () {},
+                                        child: Text(relStatus ==
+                                                RelationshipStatus
+                                                    .initiatedBySelf
+                                            ? 'Revoke Request'
+                                            : 'Accept Friend')),
+                                  ],
+                                )
+                              ]),
+                        ),
+                      );
+                      await showDialog(context: context, builder: (c) => dlg);
+                    },
+                    color: Colors.white,
                     icon: Icon(relStatus == RelationshipStatus.initiatedBySelf
                         ? FluentIcons.clock_28_regular
-                        : FluentIcons.hand_wave_20_regular))
+                        : FluentIcons.hand_wave_24_regular))
             ],
           ),
         ));
