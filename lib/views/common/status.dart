@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 const discordStatusToColor = {
-  0: Colors.orange,
+  0: Colors.grey,
   1: Colors.red,
   2: Colors.orange,
   3: Colors.grey,

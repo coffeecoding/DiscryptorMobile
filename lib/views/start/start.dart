@@ -1,8 +1,4 @@
-import 'package:discryptor/config/locator.dart';
 import 'package:discryptor/main.dart';
-import 'package:discryptor/repos/auth_repo.dart';
-import 'package:discryptor/repos/preference_repo.dart';
-import 'package:discryptor/services/network_service.dart';
 import 'package:discryptor/views/start/auth.dart';
 import 'package:discryptor/views/start/password.dart';
 import 'package:flutter/material.dart';

@@ -1,4 +1,6 @@
 import 'package:bloc/bloc.dart';
+import 'package:discryptor/models/discryptor_user.dart';
+import 'package:discryptor/models/discryptor_user_with_relationship.dart';
 import 'package:discryptor/models/idiscryptor_user.dart';
 import 'package:equatable/equatable.dart';
 
