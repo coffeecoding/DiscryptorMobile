@@ -36,10 +36,25 @@ dependencies:
   cupertino_icons: ^1.0.2
 
 dev_dependencies:
+  flutter_launcher_icons: ^0.13.0
   flutter_test:
     sdk: flutter
 
   flutter_lints: ^2.0.0
+
+flutter_icons:
+  android: true
+  ios: false
+  image_path_android: "assets/images/discryptor_logo_v1_512.png"
+  image_path_ios: "assets/images/discryptor_logo_v1_512.png"
+  min_sdk_android: 21
+  remove_alpha_ios: true
+  web:
+    generate: false
+  windows:
+    generate: false
+  macos:
+    generate: false
 
 flutter:
   # The following line ensures that the Material Icons font is

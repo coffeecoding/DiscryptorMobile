@@ -1,10 +1,6 @@
 import 'package:discryptor/cubits/add/add_cubit.dart';
-import 'package:discryptor/cubits/chat_list/chat_list_cubit.dart';
-import 'package:discryptor/cubits/profile/profile_cubit.dart';
-import 'package:discryptor/views/common/avatar_with_status.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddScreen extends StatelessWidget {
