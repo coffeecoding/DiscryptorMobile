@@ -78,6 +78,23 @@ class HomeScreen extends StatelessWidget {
                                 DiscryptorApp.navigatorKey.currentState!
                                     .pushNamed(ChatScreen.routeName);
                               },
+                              onRelationshipButtonPressed: () {
+                                final relStatus = getRelationshipStatus(
+                                    state.chats[index].userVM.user);
+                                if (relStatus ==
+                                    RelationshipStatus.initiatedBySelf) {
+                                  context
+                                      .read<ChatListCubit>()
+                                      .updateRelationship(state.chats[index],
+                                          RelationshipStatus.none);
+                                } else if (relStatus ==
+                                    RelationshipStatus.initiatedByOther) {
+                                  context
+                                      .read<ChatListCubit>()
+                                      .updateRelationship(state.chats[index],
+                                          RelationshipStatus.accepted);
+                                }
+                              },
                               chatVM: state.chats[index])),
                     ),
                   ),
@@ -162,14 +179,18 @@ class ChatListItem extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     TextButton(
-                                        onPressed: () {},
+                                        onPressed: () =>
+                                            Navigator.of(context).pop(),
                                         child: const Text(
                                           'Close',
                                           style: TextStyle(color: Colors.white),
                                         )),
                                     const SizedBox(width: 8),
                                     ElevatedButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          onRelationshipButtonPressed!();
+                                          Navigator.of(context).pop();
+                                        },
                                         child: Text(relStatus ==
                                                 RelationshipStatus
                                                     .initiatedBySelf

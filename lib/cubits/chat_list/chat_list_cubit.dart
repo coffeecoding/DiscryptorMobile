@@ -6,6 +6,7 @@ import 'package:discryptor/cubitvms/chat_vm.dart';
 import 'package:discryptor/cubitvms/user_vm.dart';
 import 'package:discryptor/models/discryptor_message.dart';
 import 'package:discryptor/models/discryptor_user.dart';
+import 'package:discryptor/models/discryptor_user_with_relationship.dart';
 import 'package:discryptor/models/relationship.dart';
 import 'package:discryptor/repos/repos.dart';
 import 'package:discryptor/services/crypto_service.dart';
@@ -29,7 +30,7 @@ class ChatListCubit extends Cubit<ChatListState> {
             .then((_) => selectedChatCubit.refresh()));
     net.socket.on(
         'UpdateRelationship',
-        (o) => updateRelationship(o![0] as String,
+        (o) => handleRelationshipUpdate(o![0] as String,
             Relationship.fromMap(o[1] as Map<String, dynamic>)));
     net.socket
         .on('DeleteMessage', (o) => print('Placeholder for deleteing message'));
@@ -47,7 +48,21 @@ class ChatListCubit extends Cubit<ChatListState> {
     selectedChatCubit.selectChat(chat);
   }
 
-  Future<void> updateRelationship(String type, Relationship updatedRel) async {
+  Future<void> updateRelationship(
+      ChatViewModel chatVM, RelationshipStatus updated) async {
+    try {
+      emit(state.copyWith(status: ChatListStatus.busy));
+      await Future.delayed(const Duration(seconds: 2));
+      emit(state.copyWith(status: ChatListStatus.success));
+    } catch (e) {
+      emit(state.copyWith(
+          status: ChatListStatus.error,
+          error: 'AOSUHFAOSUDHASHDOHASUDHASOUFHA SOUD'));
+    }
+  }
+
+  Future<void> handleRelationshipUpdate(
+      String type, Relationship updatedRel) async {
     try {
       print('Received relationship update: $updatedRel');
       emit(state.copyWith(status: ChatListStatus.busySilent));

@@ -15,7 +15,9 @@ class ChatListState extends Equatable {
           String? error}) =>
       ChatListState(
           status: status ?? this.status,
-          chats: chats ?? this.chats,
+          chats: status == ChatListStatus.busy || chats == null
+              ? this.chats
+              : chats,
           error: error ?? this.error);
 
   final ChatListStatus status;
