@@ -60,57 +60,63 @@ class HomeScreen extends StatelessWidget {
               },
               child: const Text('Start Conversation')),
         ),
-        body: state.status == ChatListStatus.busy
-            ? const Center(child: CircularProgressIndicator())
-            : Column(
-                children: [
-                  Expanded(
-                    child: RefreshIndicator(
-                      onRefresh: () =>
-                          context.read<ChatListCubit>().loadChats(),
-                      child: ListView.builder(
-                          itemCount: state.chats.length,
-                          itemBuilder: (context, index) => ChatListItem(
-                              onPressed: () {
+        body: Stack(
+          children: [
+            Column(
+              children: [
+                Expanded(
+                  child: RefreshIndicator(
+                    color: Colors.transparent,
+                    onRefresh: () => context.read<ChatListCubit>().loadChats(),
+                    child: ListView.builder(
+                        itemCount: state.chats.length,
+                        itemBuilder: (context, index) => ChatListItem(
+                            onPressed: () {
+                              context
+                                  .read<ChatListCubit>()
+                                  .selectChat(state.chats[index]);
+                              DiscryptorApp.navigatorKey.currentState!
+                                  .pushNamed(ChatScreen.routeName);
+                            },
+                            onRelationshipButtonPressed: () {
+                              final relStatus = getRelationshipStatus(
+                                  state.chats[index].userVM.user);
+                              if (relStatus ==
+                                  RelationshipStatus.initiatedBySelf) {
                                 context
                                     .read<ChatListCubit>()
-                                    .selectChat(state.chats[index]);
-                                DiscryptorApp.navigatorKey.currentState!
-                                    .pushNamed(ChatScreen.routeName);
-                              },
-                              onRelationshipButtonPressed: () {
-                                final relStatus = getRelationshipStatus(
-                                    state.chats[index].userVM.user);
-                                if (relStatus ==
-                                    RelationshipStatus.initiatedBySelf) {
-                                  context
-                                      .read<ChatListCubit>()
-                                      .updateRelationship(state.chats[index],
-                                          RelationshipStatus.none);
-                                } else if (relStatus ==
-                                    RelationshipStatus.initiatedByOther) {
-                                  context
-                                      .read<ChatListCubit>()
-                                      .updateRelationship(state.chats[index],
-                                          RelationshipStatus.accepted);
-                                }
-                              },
-                              chatVM: state.chats[index])),
-                    ),
+                                    .updateRelationship(state.chats[index],
+                                        RelationshipStatus.none);
+                              } else if (relStatus ==
+                                  RelationshipStatus.initiatedByOther) {
+                                context
+                                    .read<ChatListCubit>()
+                                    .updateRelationship(state.chats[index],
+                                        RelationshipStatus.accepted);
+                              }
+                            },
+                            chatVM: state.chats[index])),
                   ),
-                  const Divider(height: 1, indent: 0, endIndent: 0),
-                  Material(
-                      child: Center(
-                          child: ElevatedButton(
-                              onPressed: () {
-                                context.read<LoginCubit>().logoff();
-                                DiscryptorApp.navigatorKey.currentState!
-                                    .pushAndRemoveUntil(PasswordScreen.route(),
-                                        (route) => false);
-                              },
-                              child: const Text('Log off')))),
-                ],
-              ),
+                ),
+                const Divider(height: 1, indent: 0, endIndent: 0),
+                Material(
+                    child: Center(
+                        child: ElevatedButton(
+                            onPressed: () {
+                              context.read<LoginCubit>().logoff();
+                              DiscryptorApp.navigatorKey.currentState!
+                                  .pushAndRemoveUntil(
+                                      PasswordScreen.route(), (route) => false);
+                            },
+                            child: const Text('Log off')))),
+              ],
+            ),
+            if (state.status == ChatListStatus.busy)
+              Container(
+                  color: Colors.black.withOpacity(0.5),
+                  child: const Center(child: CircularProgressIndicator()))
+          ],
+        ),
       )),
     );
   }
