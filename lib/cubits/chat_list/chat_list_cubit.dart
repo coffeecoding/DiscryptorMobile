@@ -6,6 +6,7 @@ import 'package:discryptor/cubitvms/chat_vm.dart';
 import 'package:discryptor/cubitvms/user_vm.dart';
 import 'package:discryptor/models/discryptor_message.dart';
 import 'package:discryptor/models/discryptor_user.dart';
+import 'package:discryptor/models/relationship.dart';
 import 'package:discryptor/repos/repos.dart';
 import 'package:discryptor/services/crypto_service.dart';
 import 'package:discryptor/services/network_service.dart';
@@ -26,8 +27,10 @@ class ChatListCubit extends Cubit<ChatListState> {
         (o) => handleReceivedMessage(
                 DiscryptorMessage.fromMap(o![0] as Map<String, dynamic>))
             .then((_) => selectedChatCubit.refresh()));
-    net.socket.on('UpdateRelationship',
-        (o) => print("Placeholder for updating relationsip"));
+    net.socket.on(
+        'UpdateRelationship',
+        (o) => updateRelationship(o![0] as String,
+            Relationship.fromMap(o[1] as Map<String, dynamic>)));
     net.socket
         .on('DeleteMessage', (o) => print('Placeholder for deleteing message'));
   }
@@ -42,6 +45,51 @@ class ChatListCubit extends Cubit<ChatListState> {
 
   void selectChat(ChatViewModel chat) {
     selectedChatCubit.selectChat(chat);
+  }
+
+  Future<void> updateRelationship(String type, Relationship updatedRel) async {
+    try {
+      print('Received relationship update: $updatedRel');
+      emit(state.copyWith(status: ChatListStatus.busySilent));
+      final userId = self.id == updatedRel.initiatorId
+          ? updatedRel.acceptorId
+          : updatedRel.initiatorId;
+      var chatVM = state.chats.firstWhereOrNull((ch) =>
+          ch.userVM.user.id == updatedRel.initiatorId ||
+          ch.userVM.user.id == updatedRel.acceptorId);
+      if (chatVM == null) {
+        final response = await apiRepo.getUser(userId);
+        if (response.isSuccess) {
+          final userVM = UserViewModel(user: response.content!);
+          chatVM = ChatViewModel(userVM);
+          emit(state.copyWith(
+              status: ChatListStatus.success, chats: [...state.chats, chatVM]));
+        }
+      } else {
+        final cvm = chatVM.copyWith(
+            userVM: chatVM.userVM.copyWith(
+                user: chatVM.userVM.user.copyWith(
+                    isInitiatorOfRelationship: userId == updatedRel.initiatorId,
+                    relationshipAcceptanceDate: updatedRel.dateAccepted,
+                    relationshipInitiationDate: updatedRel.dateInitiated,
+                    encryptedSymmKey: userId == updatedRel.initiatorId
+                        ? updatedRel.acceptorSymmetricKey
+                        : updatedRel.initiatorSymmetricKey)));
+        final updatedChats = type.startsWith('cancelled')
+            ? state.chats.where((c) => c.userVM.user.id != userId).toList()
+            : state.chats
+                .map((c) => c.userVM.user.id == userId ? cvm : c)
+                .toList();
+        emit(state.copyWith(
+            status: ChatListStatus.success, chats: updatedChats));
+      }
+    } catch (e) {
+      print("Error handling relationship update: $e");
+      emit(state.copyWith(
+          status: ChatListStatus.error,
+          error:
+              'Updating relationship with (I=${updatedRel.initiatorId},A=${updatedRel.acceptorId} failed: $e'));
+    }
   }
 
   Future<DiscryptorMessage?> handleReceivedMessage(DiscryptorMessage msg,

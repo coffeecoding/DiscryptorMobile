@@ -26,12 +26,11 @@ class ChatViewModel extends Equatable {
     String? message,
     String? error,
   }) =>
-      ChatViewModel(
-        userVM ?? this.userVM,
-        status: status ?? this.status,
-        message: message ?? this.message,
-        error: error ?? this.error,
-      );
+      ChatViewModel(userVM ?? this.userVM,
+          status: status ?? this.status,
+          message: message ?? this.message,
+          error: error ?? this.error,
+          messages: messages);
 
   void decryptSymmetricKey(String privKey) {
     keyBase64 = base64

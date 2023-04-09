@@ -9,8 +9,8 @@ class Relationship extends Equatable {
   final int acceptorId;
   final int dateInitiated;
   final int dateAccepted;
-  final String initiatorSymmetricKey;
-  final String acceptorSymmetricKey;
+  final String? initiatorSymmetricKey;
+  final String? acceptorSymmetricKey;
 
   const Relationship({
     required this.id,
@@ -62,8 +62,8 @@ class Relationship extends Equatable {
       acceptorId: map['acceptorId'] as int,
       dateInitiated: map['dateInitiated'] as int,
       dateAccepted: map['dateAccepted'] as int,
-      initiatorSymmetricKey: map['initiatorSymmetricKey'] as String,
-      acceptorSymmetricKey: map['acceptorSymmetricKey'] as String,
+      initiatorSymmetricKey: map['initiatorSymmetricKey'] as String?,
+      acceptorSymmetricKey: map['acceptorSymmetricKey'] as String?,
     );
   }
 

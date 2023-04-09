@@ -1,6 +1,6 @@
 part of 'chat_list_cubit.dart';
 
-enum ChatListStatus { initial, busy, error, success }
+enum ChatListStatus { initial, busy, busySilent, error, success }
 
 class ChatListState extends Equatable {
   const ChatListState({
