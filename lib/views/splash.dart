@@ -3,6 +3,7 @@ import 'package:discryptor/cubits/name_cubit/name_cubit.dart';
 import 'package:discryptor/main.dart';
 import 'package:discryptor/views/start/password.dart';
 import 'package:discryptor/views/start/start.dart';
+import 'package:discryptor/views/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -48,6 +49,11 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return const Material(child: Center(child: Text('Resuming ...')));
+    return Material(
+        child: Container(
+      color: DiscryptorThemeData.backgroundColorDarker,
+      child: Center(
+          child: Image.asset('assets/images/discryptor_logo_v1_512_gray.png')),
+    ));
   }
 }
