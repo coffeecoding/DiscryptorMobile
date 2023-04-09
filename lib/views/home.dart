@@ -132,9 +132,13 @@ class ChatListItem extends StatelessWidget {
                       DiscryptorApp.navigatorKey.currentState!
                           .push(ProfileScreen.route());
                     }),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 16),
                     Expanded(
-                      child: Text(chatVM.userVM.user.username),
+                      child: Text(
+                        chatVM.userVM.user.username,
+                        style: const TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.w500),
+                      ),
                     )
                   ],
                 ),

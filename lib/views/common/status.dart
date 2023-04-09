@@ -24,13 +24,24 @@ class StatusIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-          border: showBorder ? Border.all(width: borderWidth) : null,
-          color: discordStatusToColor[discordStatus],
-          shape: BoxShape.circle),
-    );
+    return Stack(alignment: Alignment.center, children: [
+      Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+            border: showBorder ? Border.all(width: borderWidth) : null,
+            color: discordStatusToColor[discordStatus],
+            shape: BoxShape.circle),
+      ),
+      if (discordStatus == 0 || discordStatus == 3 || discordStatus == 4)
+        Container(
+          width: size / 3,
+          height: size / 3,
+          decoration: BoxDecoration(
+              border: showBorder ? Border.all(width: size <= 16 ? 4 : 7) : null,
+              color: discordStatusToColor[discordStatus],
+              shape: BoxShape.circle),
+        ),
+    ]);
   }
 }
