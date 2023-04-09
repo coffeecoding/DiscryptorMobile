@@ -2,7 +2,6 @@ import 'package:discryptor/cubits/cubits.dart';
 import 'package:discryptor/extensions/datetime_ext.dart';
 import 'package:discryptor/main.dart';
 import 'package:discryptor/models/discryptor_user_with_relationship.dart';
-import 'package:discryptor/models/idiscryptor_user.dart';
 import 'package:discryptor/views/common/avatar_with_status.dart';
 import 'package:discryptor/views/theme.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
@@ -34,7 +33,7 @@ class ProfileScreen extends StatelessWidget {
                             alignment: AlignmentDirectional.bottomEnd,
                             children: [
                               Container(height: 128, color: Colors.black),
-                              if (state.getRelationshipStatus() !=
+                              if (getRelationshipStatus(state.user!) !=
                                   RelationshipStatus.self)
                                 Container(
                                   padding: const EdgeInsets.only(
@@ -126,7 +125,7 @@ class RelationshipButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProfileCubit, ProfileState>(builder: (context, state) {
-      final status = state.getRelationshipStatus();
+      final status = getRelationshipStatus(state.user!);
       final text = status == RelationshipStatus.self
           ? '' // shouldn't occur, i.e. don't even show the button if self
           : status == RelationshipStatus.accepted

@@ -1,8 +1,35 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:discryptor/models/discryptor_user.dart';
 import 'package:discryptor/models/idiscryptor_user.dart';
 import 'package:equatable/equatable.dart';
+
+enum RelationshipStatus {
+  self,
+  none,
+  initiatedBySelf,
+  initiatedByOther,
+  accepted
+}
+
+RelationshipStatus getRelationshipStatus(IDiscryptorUser u) {
+  if (u is DiscryptorUser) return RelationshipStatus.self;
+  final duwr = u as DiscryptorUserWithRelationship;
+  return duwr.relationshipInitiationDate != null &&
+          duwr.relationshipInitiationDate! > 0 &&
+          duwr.relationshipAcceptanceDate != null &&
+          duwr.relationshipAcceptanceDate! > 0
+      ? RelationshipStatus.accepted
+      : duwr.isInitiatorOfRelationship &&
+              (duwr.relationshipAcceptanceDate == null ||
+                  duwr.relationshipAcceptanceDate == 0)
+          ? RelationshipStatus.initiatedByOther
+          : duwr.relationshipInitiationDate != null &&
+                  duwr.relationshipInitiationDate! > 0
+              ? RelationshipStatus.initiatedBySelf
+              : RelationshipStatus.none;
+}
 
 class DiscryptorUserWithRelationship extends Equatable with IDiscryptorUser {
   final int id;

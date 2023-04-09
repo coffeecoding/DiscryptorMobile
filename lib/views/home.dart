@@ -1,5 +1,8 @@
 import 'package:discryptor/cubits/cubits.dart';
+import 'package:discryptor/cubitvms/chat_vm.dart';
+import 'package:discryptor/cubitvms/user_vm.dart';
 import 'package:discryptor/main.dart';
+import 'package:discryptor/models/discryptor_user_with_relationship.dart';
 import 'package:discryptor/views/add/add.dart';
 import 'package:discryptor/views/chat/chat.dart';
 import 'package:discryptor/views/common/avatar_with_status.dart';
@@ -67,7 +70,7 @@ class HomeScreen extends StatelessWidget {
                           context.read<ChatListCubit>().loadChats(),
                       child: ListView.builder(
                           itemCount: state.chats.length,
-                          itemBuilder: (context, index) => RawMaterialButton(
+                          itemBuilder: (context, index) => ChatListItem(
                               onPressed: () {
                                 context
                                     .read<ChatListCubit>()
@@ -75,25 +78,7 @@ class HomeScreen extends StatelessWidget {
                                 DiscryptorApp.navigatorKey.currentState!
                                     .pushNamed(ChatScreen.routeName);
                               },
-                              elevation: 2.0,
-                              padding: const EdgeInsets.all(8),
-                              child: Row(
-                                children: [
-                                  AvatarWithStatus(
-                                      state.chats[index].userVM.user,
-                                      onTap: () {
-                                    context.read<ProfileCubit>().selectUser(
-                                        state.chats[index].userVM.user);
-                                    DiscryptorApp.navigatorKey.currentState!
-                                        .push(ProfileScreen.route());
-                                  }),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: Text(state
-                                        .chats[index].userVM.user.username),
-                                  )
-                                ],
-                              ))),
+                              chatVM: state.chats[index])),
                     ),
                   ),
                   const Divider(height: 1, indent: 0, endIndent: 0),
@@ -111,5 +96,60 @@ class HomeScreen extends StatelessWidget {
               ),
       )),
     );
+  }
+}
+
+class ChatListItem extends StatelessWidget {
+  const ChatListItem(
+      {required this.chatVM,
+      this.onPressed,
+      this.onRelationshipButtonPressed,
+      super.key});
+
+  final ChatViewModel chatVM;
+  final Function()? onPressed;
+  final Function()? onRelationshipButtonPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final relStatus = getRelationshipStatus(chatVM.userVM.user);
+    return RawMaterialButton(
+        onPressed: onPressed,
+        elevation: 2.0,
+        padding: const EdgeInsets.only(left: 16, right: 8, top: 8, bottom: 8),
+        child: Opacity(
+          opacity: relStatus == RelationshipStatus.accepted ? 1 : 0.4,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Row(
+                  children: [
+                    AvatarWithStatus(chatVM.userVM.user, onTap: () {
+                      context
+                          .read<ProfileCubit>()
+                          .selectUser(chatVM.userVM.user);
+                      DiscryptorApp.navigatorKey.currentState!
+                          .push(ProfileScreen.route());
+                    }),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(chatVM.userVM.user.username),
+                    )
+                  ],
+                ),
+              ),
+              if (relStatus != RelationshipStatus.accepted)
+                IconButton(
+                    padding: EdgeInsets.zero,
+                    splashRadius: 24,
+                    onPressed: onRelationshipButtonPressed,
+                    color: Colors.white70,
+                    icon: Icon(relStatus == RelationshipStatus.initiatedBySelf
+                        ? FluentIcons.clock_28_regular
+                        : FluentIcons.hand_wave_20_regular))
+            ],
+          ),
+        ));
   }
 }
