@@ -18,6 +18,25 @@ class AddCubit extends Cubit<AddState> {
     emit(state.copyWith(status: AddStatus.initial, fullname: value, error: ''));
   }
 
+  Future<void> refresh() async {
+    if (state.result != null) {
+      try {
+        emit(state.copyWith(status: AddStatus.busy));
+        final re = await apiRepo.getUser(state.result!.id);
+        if (!re.isSuccess) {
+          emit(state.copyWith(status: AddStatus.initial));
+          return;
+        }
+        final uvm = UserViewModel(user: re.content!);
+        emit(state.copyWith(status: AddStatus.success, result: uvm));
+      } catch (e) {
+        print("Error refreshing add screen: $e");
+        emit(
+            state.copyWith(status: AddStatus.error, error: 'Unexpected error'));
+      }
+    }
+  }
+
   Future<void> executeSearch() async {
     try {
       emit(state.copyWith(status: AddStatus.busy, error: ''));

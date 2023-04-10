@@ -23,6 +23,7 @@ class AddScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ctr = TextEditingController();
+    context.read<AddCubit>().refresh();
     return BlocBuilder<AddCubit, AddState>(
       builder: (context, state) => Column(
         children: [
