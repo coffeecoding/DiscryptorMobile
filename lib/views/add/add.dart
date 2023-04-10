@@ -1,4 +1,7 @@
 import 'package:discryptor/cubits/add/add_cubit.dart';
+import 'package:discryptor/cubits/chat_list/chat_list_cubit.dart';
+import 'package:discryptor/cubitvms/chat_vm.dart';
+import 'package:discryptor/cubitvms/user_vm.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -62,44 +65,51 @@ class AddScreen extends StatelessWidget {
           const SizedBox(height: 16),
           state.result == null
               ? const Text('')
-              : ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Material(
-                    child: Container(
-                      padding: const EdgeInsets.only(left: 8),
-                      child: InkWell(
-                        splashColor: Colors.red,
-                        child: ListTile(
-                            trailing: IconButton(
-                                splashRadius: 24,
-                                icon: const Icon(
-                                    FluentIcons.person_add_24_filled),
-                                onPressed: () {}),
-                            contentPadding: EdgeInsets.zero,
-                            title: Row(
-                              children: [
-                                CircleAvatar(
-                                  radius: 20,
-                                  backgroundImage: NetworkImage(
-                                      state.result!.user.getUsedAvatarUrl),
-                                ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Row(
-                                    children: [
-                                      Text(state.result!.user.username,
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.w500)),
-                                      Text(
-                                        '#${state.result!.user.discriminator}',
-                                        style: const TextStyle(
-                                            color: Colors.white54),
-                                      ),
-                                    ],
+              : GestureDetector(
+                  onDoubleTap: () {
+                    final chatVM = ChatViewModel(state.result!);
+                    context.read<ChatListCubit>().addChat(chatVM);
+                    Navigator.of(context).pop();
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Material(
+                      child: Container(
+                        padding: const EdgeInsets.only(left: 8),
+                        child: InkWell(
+                          splashColor: Colors.red,
+                          child: ListTile(
+                              trailing: IconButton(
+                                  splashRadius: 24,
+                                  icon: const Icon(
+                                      FluentIcons.person_add_24_filled),
+                                  onPressed: () {}),
+                              contentPadding: EdgeInsets.zero,
+                              title: Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: 20,
+                                    backgroundImage: NetworkImage(
+                                        state.result!.user.getUsedAvatarUrl),
                                   ),
-                                ),
-                              ],
-                            )),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: Row(
+                                      children: [
+                                        Text(state.result!.user.username,
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.w500)),
+                                        Text(
+                                          '#${state.result!.user.discriminator}',
+                                          style: const TextStyle(
+                                              color: Colors.white54),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              )),
+                        ),
                       ),
                     ),
                   ),

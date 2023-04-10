@@ -2,6 +2,7 @@ import 'package:discryptor/cubits/cubits.dart';
 import 'package:discryptor/cubitvms/message_vm.dart';
 import 'package:discryptor/main.dart';
 import 'package:discryptor/models/discryptor_user.dart';
+import 'package:discryptor/models/discryptor_user_with_relationship.dart';
 import 'package:discryptor/models/idiscryptor_user.dart';
 import 'package:discryptor/views/common/status.dart';
 import 'package:discryptor/views/profile/profile.dart';
@@ -135,58 +136,92 @@ class ChatScreen extends StatelessWidget {
                           }),
                     )),
                     const Divider(height: 1.0),
-                    StatefulBuilder(
-                      builder: (context, setState) => Container(
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor),
-                          child: Container(
-                              margin: const EdgeInsets.only(left: 16, right: 8),
-                              child: Row(
-                                children: [
-                                  Flexible(
-                                    child: Material(
-                                        child: TextField(
-                                            controller: ctr,
-                                            onChanged: (val) {
-                                              context
-                                                  .read<SelectedChatCubit>()
-                                                  .messageFieldChanged(val);
-                                              setState(() => _isComposing =
-                                                  val.isEmpty ? false : true);
-                                            },
-                                            onSubmitted: (val) {},
-                                            maxLines: 1,
-                                            decoration:
-                                                const InputDecoration.collapsed(
-                                                    hintText: 'Compose ...'))),
-                                  ),
-                                  IconButton(
-                                      onPressed: !_isComposing ||
-                                              state.status ==
-                                                  SelectedChatStatus
-                                                      .busySending ||
-                                              ctr.text.isEmpty
-                                          ? null
-                                          : () => context
-                                                  .read<SelectedChatCubit>()
-                                                  .sendMessage(ctr.text)
-                                                  .then((success) {
-                                                if (success) {
-                                                  ctr.text = '';
-                                                  SchedulerBinding.instance
-                                                      .addPostFrameCallback(
-                                                          (_) {
-                                                    sctr.jumpTo(sctr.position
-                                                        .maxScrollExtent);
-                                                  });
-                                                }
-                                              }),
-                                      splashRadius: 1,
-                                      icon: const Icon(
-                                          FluentIcons.send_20_filled))
-                                ],
-                              ))),
-                    )
+                    getRelationshipStatus(state.chat!.userVM.user) ==
+                            RelationshipStatus.accepted
+                        ? StatefulBuilder(
+                            builder: (context, setState) => Container(
+                                decoration: BoxDecoration(
+                                    color: Theme.of(context)
+                                        .scaffoldBackgroundColor),
+                                child: Container(
+                                    margin: const EdgeInsets.only(
+                                        left: 16, right: 8),
+                                    child: Row(
+                                      children: [
+                                        Flexible(
+                                          child: Material(
+                                              child: TextField(
+                                                  controller: ctr,
+                                                  onChanged: (val) {
+                                                    context
+                                                        .read<
+                                                            SelectedChatCubit>()
+                                                        .messageFieldChanged(
+                                                            val);
+                                                    setState(() =>
+                                                        _isComposing =
+                                                            val.isEmpty
+                                                                ? false
+                                                                : true);
+                                                  },
+                                                  onSubmitted: (val) {},
+                                                  maxLines: 1,
+                                                  decoration:
+                                                      const InputDecoration
+                                                              .collapsed(
+                                                          hintText:
+                                                              'Compose ...'))),
+                                        ),
+                                        IconButton(
+                                            onPressed: !_isComposing ||
+                                                    state.status ==
+                                                        SelectedChatStatus
+                                                            .busySending ||
+                                                    ctr.text.isEmpty
+                                                ? null
+                                                : () => context
+                                                        .read<
+                                                            SelectedChatCubit>()
+                                                        .sendMessage(ctr.text)
+                                                        .then((success) {
+                                                      if (success) {
+                                                        ctr.text = '';
+                                                        SchedulerBinding
+                                                            .instance
+                                                            .addPostFrameCallback(
+                                                                (_) {
+                                                          sctr.jumpTo(sctr
+                                                              .position
+                                                              .maxScrollExtent);
+                                                        });
+                                                      }
+                                                    }),
+                                            splashRadius: 1,
+                                            icon: const Icon(
+                                                FluentIcons.send_20_filled))
+                                      ],
+                                    ))),
+                          )
+                        : Center(
+                            child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            child: Builder(builder: (context) {
+                              final rel = getRelationshipStatus(
+                                  state.chat!.userVM.user);
+                              final text = rel ==
+                                      RelationshipStatus.initiatedBySelf
+                                  ? 'Friend request pending'
+                                  : rel == RelationshipStatus.initiatedByOther
+                                      ? '${state.chat!.userVM.user.username} wants to add you, accept?'
+                                      : 'Add ${state.chat!.userVM.user.username} as friend in order to chat.';
+                              // Todo: Show appropriate UI according to
+                              // friendship status, including buttons to accept/
+                              // revoke status; refresh on change
+                              // For now just show simple message
+                              return Text(
+                                  'Add ${state.chat!.userVM.user.username} as friend in order to chat.');
+                            }),
+                          ))
                   ],
                 ),
               ));

@@ -30,8 +30,11 @@ class NetworkService {
     socket.onclose(({error}) => print('Socket closed with error: $error'));
   }
 
-  static const String baseUrl = 'server.discryptor.io';
-  //static const String baseUrl = '192.168.178.44:5278';
+  // USE WITH HTTPS !!!
+  // static const String baseUrl = 'server.discryptor.io';
+
+  // USE WITH HTTP !!!
+  static const String baseUrl = '192.168.178.44:5278';
 
   final http.Client _client;
   final HubConnection socket;
@@ -42,11 +45,11 @@ class NetworkService {
   }
 
   Uri _createUri(String requestUri) {
-    return Uri.parse('https://$baseUrl$requestUri');
+    return Uri.parse('http://$baseUrl$requestUri');
   }
 
   Uri _createUriHttps(String requestUri) {
-    return Uri.parse('https://$baseUrl$requestUri');
+    return Uri.parse('http://$baseUrl$requestUri');
   }
 
   Future<Response> get(String requestUri) async {

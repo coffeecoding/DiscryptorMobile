@@ -171,8 +171,8 @@ class ApiRepo {
       int acceptorId, String acceptorSymmKey) async {
     try {
       final uri = '/api/relationship/initiate/$acceptorId';
-      final re = await _net.post(
-          uri, jsonEncode(KeyWrapper(symmKey: acceptorSymmKey)));
+      final body = '{"SymmKey":"$acceptorSymmKey"}';
+      final re = await _net.post(uri, body);
       if (re.statusCode == 401) {
         bool success = await _auth.refreshAuth();
         if (success) return initiateRelationship(acceptorId, acceptorSymmKey);
@@ -190,8 +190,8 @@ class ApiRepo {
       int initiatorId, String initiatorSymmKey) async {
     try {
       final uri = '/api/relationship/accept/$initiatorId';
-      final re = await _net.post(
-          uri, jsonEncode(KeyWrapper(symmKey: initiatorSymmKey)));
+      final body = '{"SymmKey":"$initiatorSymmKey"}';
+      final re = await _net.post(uri, body);
       if (re.statusCode == 401) {
         bool success = await _auth.refreshAuth();
         if (success) return initiateRelationship(initiatorId, initiatorSymmKey);

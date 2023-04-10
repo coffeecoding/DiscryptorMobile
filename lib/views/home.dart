@@ -68,34 +68,35 @@ class HomeScreen extends StatelessWidget {
                   child: RefreshIndicator(
                     color: Colors.transparent,
                     onRefresh: () => context.read<ChatListCubit>().loadChats(),
-                    child: ListView.builder(
-                        itemCount: state.chats.length,
-                        itemBuilder: (context, index) => ChatListItem(
-                            onPressed: () {
-                              context
-                                  .read<ChatListCubit>()
-                                  .selectChat(state.chats[index]);
-                              DiscryptorApp.navigatorKey.currentState!
-                                  .pushNamed(ChatScreen.routeName);
-                            },
-                            onRelationshipButtonPressed: () {
-                              final relStatus = getRelationshipStatus(
-                                  state.chats[index].userVM.user);
-                              if (relStatus ==
-                                  RelationshipStatus.initiatedBySelf) {
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: ListView.builder(
+                          itemCount: state.chats.length,
+                          itemBuilder: (context, index) => ChatListItem(
+                              onPressed: () {
                                 context
                                     .read<ChatListCubit>()
-                                    .updateRelationship(state.chats[index],
-                                        RelationshipStatus.none);
-                              } else if (relStatus ==
-                                  RelationshipStatus.initiatedByOther) {
+                                    .selectChat(state.chats[index]);
+                                DiscryptorApp.navigatorKey.currentState!
+                                    .pushNamed(ChatScreen.routeName);
+                              },
+                              onRelationshipButtonPressed: () {
+                                final relStatus = getRelationshipStatus(
+                                    state.chats[index].userVM.user);
+                                final newStatus = relStatus ==
+                                        RelationshipStatus.initiatedBySelf
+                                    ? RelationshipStatus.none
+                                    : relStatus ==
+                                            RelationshipStatus.initiatedByOther
+                                        ? RelationshipStatus.accepted
+                                        : RelationshipStatus.initiatedBySelf;
                                 context
                                     .read<ChatListCubit>()
-                                    .updateRelationship(state.chats[index],
-                                        RelationshipStatus.accepted);
-                              }
-                            },
-                            chatVM: state.chats[index])),
+                                    .updateRelationship(
+                                        state.chats[index], newStatus);
+                              },
+                              chatVM: state.chats[index])),
+                    ),
                   ),
                 ),
                 const Divider(height: 1, indent: 0, endIndent: 0),
@@ -173,12 +174,14 @@ class ChatListItem extends StatelessWidget {
                     onPressed: () async {
                       final dlg = CustomDialog(
                         child: BaseDialog(
-                          title: 'Confirm action',
+                          title: relStatus == RelationshipStatus.none
+                              ? 'Add user'
+                              : 'Pending friend request',
                           child: Column(
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 Text(
-                                  "${relStatus == RelationshipStatus.initiatedBySelf ? 'Revoke friend request with' : 'Accept friend request from'} user ${chatVM.userVM.user.username}?",
+                                  "${relStatus == RelationshipStatus.initiatedBySelf ? 'Revoke friend request for' : relStatus == RelationshipStatus.initiatedByOther ? 'Accept friend request from' : 'Add'} ${chatVM.userVM.user.username}#${chatVM.userVM.user.discriminator}?",
                                 ),
                                 const SizedBox(height: 32),
                                 Row(
@@ -200,8 +203,12 @@ class ChatListItem extends StatelessWidget {
                                         child: Text(relStatus ==
                                                 RelationshipStatus
                                                     .initiatedBySelf
-                                            ? 'Revoke Request'
-                                            : 'Accept Friend')),
+                                            ? 'Revoke'
+                                            : relStatus ==
+                                                    RelationshipStatus
+                                                        .initiatedByOther
+                                                ? 'Accept'
+                                                : 'Add')),
                                   ],
                                 )
                               ]),
@@ -212,7 +219,9 @@ class ChatListItem extends StatelessWidget {
                     color: Colors.white,
                     icon: Icon(relStatus == RelationshipStatus.initiatedBySelf
                         ? FluentIcons.clock_28_regular
-                        : FluentIcons.hand_wave_24_regular))
+                        : relStatus == RelationshipStatus.initiatedByOther
+                            ? FluentIcons.hand_wave_24_regular
+                            : FluentIcons.person_add_24_filled))
             ],
           ),
         ));

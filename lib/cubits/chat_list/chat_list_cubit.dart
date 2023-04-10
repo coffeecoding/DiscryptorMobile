@@ -1,3 +1,7 @@
+// ignore_for_file: avoid_print
+
+import 'dart:convert';
+
 import 'package:bloc/bloc.dart';
 import 'package:discryptor/config/locator.dart';
 import 'package:discryptor/cubits/cubits.dart';
@@ -11,6 +15,8 @@ import 'package:discryptor/models/relationship.dart';
 import 'package:discryptor/repos/repos.dart';
 import 'package:discryptor/services/crypto_service.dart';
 import 'package:discryptor/services/network_service.dart';
+import 'package:discryptor/utils/crypto/crypto.dart';
+import 'package:discryptor/utils/string.dart';
 import 'package:equatable/equatable.dart';
 import 'package:collection/collection.dart';
 
@@ -21,6 +27,7 @@ class ChatListCubit extends Cubit<ChatListState> {
       : apiRepo = locator.get<ApiRepo>(),
         prefRepo = locator.get<PreferenceRepo>(),
         crypto = locator.get<CryptoService>(),
+        bl = locator.get<DiscryptorBL>(),
         net = locator.get<NetworkService>(),
         super(const ChatListState()) {
     net.socket.on(
@@ -39,6 +46,7 @@ class ChatListCubit extends Cubit<ChatListState> {
   final SelectedChatCubit selectedChatCubit;
   final ApiRepo apiRepo;
   final PreferenceRepo prefRepo;
+  final DiscryptorBL bl;
   final CryptoService crypto;
   final NetworkService net;
 
@@ -48,16 +56,62 @@ class ChatListCubit extends Cubit<ChatListState> {
     selectedChatCubit.selectChat(chat);
   }
 
+  void updateChatVM(ChatViewModel updated) {
+    emit(state.copyWith(
+        chats: state.chats
+            .map(
+                (c) => c.userVM.user.id == updated.userVM.user.id ? updated : c)
+            .toList()));
+  }
+
+  void addChat(ChatViewModel chatVM) {
+    emit(state.copyWith(status: ChatListStatus.busySilent));
+    emit(state.copyWith(
+        status: ChatListStatus.success, chats: [...state.chats, chatVM]));
+  }
+
   Future<void> updateRelationship(
-      ChatViewModel chatVM, RelationshipStatus updated) async {
+      ChatViewModel chatVM, RelationshipStatus update) async {
     try {
       emit(state.copyWith(status: ChatListStatus.busy));
-      await Future.delayed(const Duration(seconds: 2));
+      final user = chatVM.userVM.user;
+      if (update == RelationshipStatus.initiatedBySelf) {
+        final re = await bl.initiateRelationship(user);
+        if (!re.isSuccess) {
+          emit(state.copyWith(status: ChatListStatus.error, error: re.userMsg));
+          print(re.debugMsg);
+          return;
+        }
+        final updatedChatVM =
+            chatVM.copyWith(userVM: chatVM.userVM.copyWith(user: re.result));
+        updateChatVM(updatedChatVM);
+      } else if (update == RelationshipStatus.accepted) {
+        final re = await bl.acceptRelationship(user);
+        if (!re.isSuccess) {
+          emit(state.copyWith(status: ChatListStatus.error, error: re.userMsg));
+          print(re.debugMsg);
+          return;
+        }
+        final updatedChatVM =
+            chatVM.copyWith(userVM: chatVM.userVM.copyWith(user: re.result));
+        updateChatVM(updatedChatVM);
+      } else if (update == RelationshipStatus.none) {
+        // cancel friendship
+        final re = await bl.cancelRelationship(user);
+        if (!re.isSuccess) {
+          emit(state.copyWith(status: ChatListStatus.error, error: re.userMsg));
+          print(re.debugMsg);
+          return;
+        }
+        final updatedChatVM =
+            chatVM.copyWith(userVM: chatVM.userVM.copyWith(user: re.result));
+        updateChatVM(updatedChatVM);
+      }
       emit(state.copyWith(status: ChatListStatus.success));
     } catch (e) {
       emit(state.copyWith(
           status: ChatListStatus.error,
-          error: 'AOSUHFAOSUDHASHDOHASUDHASOUFHA SOUD'));
+          error: 'Error updating relationship: $e'));
     }
   }
 
@@ -90,11 +144,15 @@ class ChatListCubit extends Cubit<ChatListState> {
                     encryptedSymmKey: userId == updatedRel.initiatorId
                         ? updatedRel.acceptorSymmetricKey
                         : updatedRel.initiatorSymmetricKey)));
-        final updatedChats = type.startsWith('cancelled')
-            ? state.chats.where((c) => c.userVM.user.id != userId).toList()
+        final updatedChats = type.startsWith('cancel')
+            ? state.chats
+                .where((c) => true /*c.userVM.user.id != userId*/)
+                .toList()
             : state.chats
                 .map((c) => c.userVM.user.id == userId ? cvm : c)
                 .toList();
+        final privkey = await prefRepo.privkey;
+        cvm.decryptSymmetricKey(privkey!);
         emit(state.copyWith(
             status: ChatListStatus.success, chats: updatedChats));
       }
