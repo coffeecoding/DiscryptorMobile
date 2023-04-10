@@ -65,9 +65,24 @@ class ChatListCubit extends Cubit<ChatListState> {
   }
 
   void addChat(ChatViewModel chatVM) {
+    if (state.chats.any((c) => c.userVM.user.id == chatVM.userVM.user.id)) {
+      return;
+    }
     emit(state.copyWith(status: ChatListStatus.busySilent));
     emit(state.copyWith(
         status: ChatListStatus.success, chats: [...state.chats, chatVM]));
+  }
+
+  Future<void> updateRelationshipDirect(
+      UserViewModel userVM, RelationshipStatus update) async {
+    ChatViewModel? chatVM =
+        state.chats.firstWhereOrNull((c) => c.userVM.id == userVM.id);
+    if (chatVM == null) {
+      chatVM = ChatViewModel(userVM);
+      final privkey = await prefRepo.privkey;
+      chatVM.decryptSymmetricKey(privkey!);
+    }
+    await updateRelationship(chatVM, update);
   }
 
   Future<void> updateRelationship(

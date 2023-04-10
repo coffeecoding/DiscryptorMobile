@@ -1,6 +1,4 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:convert';
-
 import 'package:discryptor/models/discryptor_user_with_relationship.dart';
 import 'package:equatable/equatable.dart';
 
@@ -11,6 +9,7 @@ class UserViewModel extends Equatable {
   final DiscryptorUserWithRelationship user;
   final String error;
 
+  int get id => user.id;
   String get avatarUrl => user.getUsedAvatarUrl;
   String get fullname => user.fullname;
   String get hashDiscriminator => '#${user.discriminator}';

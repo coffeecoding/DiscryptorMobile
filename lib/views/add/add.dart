@@ -2,6 +2,7 @@ import 'package:discryptor/cubits/add/add_cubit.dart';
 import 'package:discryptor/cubits/chat_list/chat_list_cubit.dart';
 import 'package:discryptor/cubitvms/chat_vm.dart';
 import 'package:discryptor/cubitvms/user_vm.dart';
+import 'package:discryptor/models/discryptor_user_with_relationship.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -83,7 +84,23 @@ class AddScreen extends StatelessWidget {
                                   splashRadius: 24,
                                   icon: const Icon(
                                       FluentIcons.person_add_24_filled),
-                                  onPressed: () {}),
+                                  onPressed: () {
+                                    final relStatus = getRelationshipStatus(
+                                        state.result!.user);
+                                    final newStatus = relStatus ==
+                                            RelationshipStatus.initiatedBySelf
+                                        ? RelationshipStatus.none
+                                        : relStatus ==
+                                                RelationshipStatus
+                                                    .initiatedByOther
+                                            ? RelationshipStatus.accepted
+                                            : RelationshipStatus
+                                                .initiatedBySelf;
+                                    context
+                                        .read<ChatListCubit>()
+                                        .updateRelationshipDirect(
+                                            state.result!, newStatus);
+                                  }),
                               contentPadding: EdgeInsets.zero,
                               title: Row(
                                 children: [
