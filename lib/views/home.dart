@@ -1,13 +1,10 @@
 import 'package:discryptor/cubits/cubits.dart';
-import 'package:discryptor/cubitvms/chat_vm.dart';
 import 'package:discryptor/main.dart';
 import 'package:discryptor/models/discryptor_user_with_relationship.dart';
 import 'package:discryptor/views/add/add.dart';
 import 'package:discryptor/views/chat/chat.dart';
-import 'package:discryptor/views/common/avatar_with_status.dart';
 import 'package:discryptor/views/dialog/base_dialog.dart';
 import 'package:discryptor/views/dialog/custom_dialog.dart';
-import 'package:discryptor/views/profile/profile.dart';
 import 'package:discryptor/views/start/password.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';

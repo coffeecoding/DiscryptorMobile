@@ -3,6 +3,7 @@ import 'package:discryptor/cubits/chat_list/chat_list_cubit.dart';
 import 'package:discryptor/cubitvms/chat_vm.dart';
 import 'package:discryptor/cubitvms/user_vm.dart';
 import 'package:discryptor/models/discryptor_user_with_relationship.dart';
+import 'package:discryptor/views/common/chat_listitem.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -75,60 +76,28 @@ class AddScreen extends StatelessWidget {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
                     child: Material(
-                      child: Container(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: InkWell(
-                          splashColor: Colors.red,
-                          child: ListTile(
-                              trailing: IconButton(
-                                  splashRadius: 24,
-                                  icon: const Icon(
-                                      FluentIcons.person_add_24_filled),
-                                  onPressed: () {
-                                    final relStatus = getRelationshipStatus(
-                                        state.result!.user);
-                                    final newStatus = relStatus ==
-                                            RelationshipStatus.initiatedBySelf
-                                        ? RelationshipStatus.none
-                                        : relStatus ==
-                                                RelationshipStatus
-                                                    .initiatedByOther
-                                            ? RelationshipStatus.accepted
-                                            : RelationshipStatus
-                                                .initiatedBySelf;
-                                    context
-                                        .read<ChatListCubit>()
-                                        .updateRelationshipDirect(
-                                            state.result!, newStatus);
-                                  }),
-                              contentPadding: EdgeInsets.zero,
-                              title: Row(
-                                children: [
-                                  CircleAvatar(
-                                    radius: 20,
-                                    backgroundImage: NetworkImage(
-                                        state.result!.user.getUsedAvatarUrl),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Expanded(
-                                    child: Row(
-                                      children: [
-                                        Text(state.result!.user.username,
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.w500)),
-                                        Text(
-                                          '#${state.result!.user.discriminator}',
-                                          style: const TextStyle(
-                                              color: Colors.white54),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              )),
-                        ),
-                      ),
-                    ),
+                        child: ChatListItem(
+                            chatVM: ChatViewModel(state.result!),
+                            onPressed: () {},
+                            onRelationshipButtonPressed: () {
+                              final clc = context.read<ChatListCubit>();
+                              final relStatus =
+                                  getRelationshipStatus(state.result!.user);
+                              final newStatus = relStatus ==
+                                      RelationshipStatus.initiatedBySelf
+                                  ? RelationshipStatus.none
+                                  : relStatus ==
+                                          RelationshipStatus.initiatedByOther
+                                      ? RelationshipStatus.accepted
+                                      : RelationshipStatus.initiatedBySelf;
+                              final chatVM = ChatViewModel(state.result!);
+                              clc.updateRelationship(chatVM, newStatus);
+                              if (newStatus != RelationshipStatus.none) {
+                                clc.addChat(chatVM);
+                              }
+                              Navigator.of(context).pop();
+                            },
+                            opacity: 1)),
                   ),
                 ),
           if (state.error.isNotEmpty) const SizedBox(height: 24),

@@ -15,11 +15,13 @@ class ChatListItem extends StatelessWidget {
       {required this.chatVM,
       this.onPressed,
       this.onRelationshipButtonPressed,
+      this.opacity = 0.5,
       super.key});
 
   final ChatViewModel chatVM;
   final Function()? onPressed;
   final Function()? onRelationshipButtonPressed;
+  final double opacity;
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,7 @@ class ChatListItem extends StatelessWidget {
         elevation: 2.0,
         padding: const EdgeInsets.only(left: 16, right: 8, top: 8, bottom: 8),
         child: Opacity(
-          opacity: relStatus == RelationshipStatus.accepted ? 1 : 0.5,
+          opacity: relStatus == RelationshipStatus.accepted ? 1 : opacity,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
