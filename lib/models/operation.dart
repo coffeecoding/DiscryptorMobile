@@ -7,4 +7,9 @@ class Operation<T> {
   final String debugMsg;
   final String? userMsg;
   final T? result;
+
+  @override
+  String toString() {
+    return '[Operation ${isSuccess ? 'failed' : 'succeeded'} of type ${T.runtimeType}: $debugMsg]';
+  }
 }

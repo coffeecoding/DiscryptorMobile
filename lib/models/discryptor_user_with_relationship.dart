@@ -6,7 +6,7 @@ import 'package:discryptor/models/idiscryptor_user.dart';
 import 'package:equatable/equatable.dart';
 
 enum RelationshipStatus {
-  self,
+  self, // if the user in question is us
   none,
   initiatedBySelf,
   initiatedByOther,

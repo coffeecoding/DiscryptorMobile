@@ -47,6 +47,7 @@ class ChatViewModel extends Equatable {
   void decryptSymmetricKey(String privKey) {
     if (userVM.user.encryptedSymmKey == null) {
       // can happen
+      keyBase64 = '';
       return;
     }
     keyBase64 = base64

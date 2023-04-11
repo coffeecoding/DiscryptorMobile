@@ -11,6 +11,7 @@ import 'package:discryptor/cubitvms/user_vm.dart';
 import 'package:discryptor/models/discryptor_message.dart';
 import 'package:discryptor/models/discryptor_user.dart';
 import 'package:discryptor/models/discryptor_user_with_relationship.dart';
+import 'package:discryptor/models/idiscryptor_user.dart';
 import 'package:discryptor/models/relationship.dart';
 import 'package:discryptor/repos/repos.dart';
 import 'package:discryptor/services/crypto_service.dart';
@@ -71,6 +72,16 @@ class ChatListCubit extends Cubit<ChatListState> {
         status: ChatListStatus.success, chats: [...state.chats, chatVM]));
   }
 
+  Future<IDiscryptorUser?> updateRelationshipById(
+      int userId, RelationshipStatus update) async {
+    ChatViewModel? chatVM =
+        state.chats.firstWhereOrNull((c) => c.userVM.id == userId);
+    if (chatVM == null) {
+      return null;
+    }
+    return await updateRelationship(chatVM, update);
+  }
+
   Future<void> updateRelationshipDirect(
       UserViewModel userVM, RelationshipStatus update) async {
     ChatViewModel? chatVM =
@@ -83,48 +94,39 @@ class ChatListCubit extends Cubit<ChatListState> {
     await updateRelationship(chatVM, update);
   }
 
-  Future<void> updateRelationship(
+  Future<IDiscryptorUser?> updateRelationship(
       ChatViewModel chatVM, RelationshipStatus update) async {
     try {
       emit(state.copyWith(status: ChatListStatus.busy));
+      // ensure privkey is decrypted if present
+      final privKey = await prefRepo.privkey;
+      chatVM.decryptSymmetricKey(privKey!);
       final user = chatVM.userVM.user;
+      ChatViewModel? updatedChatVM;
       if (update == RelationshipStatus.initiatedBySelf) {
         final re = await bl.initiateRelationship(user);
-        if (!re.isSuccess) {
-          emit(state.copyWith(status: ChatListStatus.error, error: re.userMsg));
-          print(re.debugMsg);
-          return;
-        }
-        final updatedChatVM =
+        if (!re.isSuccess) throw re;
+        updatedChatVM =
             chatVM.copyWith(userVM: chatVM.userVM.copyWith(user: re.result));
-        updateChatVM(updatedChatVM);
       } else if (update == RelationshipStatus.accepted) {
         final re = await bl.acceptRelationship(user);
-        if (!re.isSuccess) {
-          emit(state.copyWith(status: ChatListStatus.error, error: re.userMsg));
-          print(re.debugMsg);
-          return;
-        }
-        final updatedChatVM =
+        if (!re.isSuccess) throw re;
+        updatedChatVM =
             chatVM.copyWith(userVM: chatVM.userVM.copyWith(user: re.result));
-        updateChatVM(updatedChatVM);
       } else if (update == RelationshipStatus.none) {
-        // cancel friendship
         final re = await bl.cancelRelationship(user);
-        if (!re.isSuccess) {
-          emit(state.copyWith(status: ChatListStatus.error, error: re.userMsg));
-          print(re.debugMsg);
-          return;
-        }
-        final updatedChatVM =
+        if (!re.isSuccess) throw re;
+        updatedChatVM =
             chatVM.copyWith(userVM: chatVM.userVM.copyWith(user: re.result));
-        updateChatVM(updatedChatVM);
       }
+      updateChatVM(updatedChatVM!);
       emit(state.copyWith(status: ChatListStatus.success));
+      return updatedChatVM.userVM.user;
     } catch (e) {
       emit(state.copyWith(
           status: ChatListStatus.error,
           error: 'Error updating relationship: $e'));
+      return null;
     }
   }
 

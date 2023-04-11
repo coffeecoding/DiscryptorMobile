@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:discryptor/cubits/cubits.dart';
 import 'package:discryptor/extensions/datetime_ext.dart';
 import 'package:discryptor/main.dart';
@@ -24,6 +25,7 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
         child: BlocBuilder<ProfileCubit, ProfileState>(
+            buildWhen: (p, c) => p.status != c.status,
             builder: (context, state) => Scaffold(
                   body: Column(
                     children: [
@@ -38,7 +40,9 @@ class ProfileScreen extends StatelessWidget {
                                 Container(
                                   padding: const EdgeInsets.only(
                                       bottom: 4.0, right: 16),
-                                  child: const RelationshipButton(),
+                                  child: state.status == ProfileStatus.changing
+                                      ? const CircularProgressIndicator()
+                                      : RelationshipButton(key: UniqueKey()),
                                 )
                             ],
                           ),
@@ -136,7 +140,16 @@ class RelationshipButton extends StatelessWidget {
                       ? 'Revoke Friend Request'
                       : 'Add Friend';
       return ElevatedButton(
-          onPressed: () {},
+          onPressed: () {
+            final clc = context.read<ChatListCubit>();
+            final chatVM = clc.state.chats
+                .firstWhereOrNull((c) => c.id == state.user!.getId);
+            if (chatVM == null) {
+              Navigator.of(context).pop();
+              return;
+            }
+            context.read<ProfileCubit>().updateRelationship(clc);
+          },
           style: ButtonStyle(
               backgroundColor:
                   MaterialStatePropertyAll(status == RelationshipStatus.accepted
