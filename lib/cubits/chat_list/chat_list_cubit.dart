@@ -15,8 +15,6 @@ import 'package:discryptor/models/relationship.dart';
 import 'package:discryptor/repos/repos.dart';
 import 'package:discryptor/services/crypto_service.dart';
 import 'package:discryptor/services/network_service.dart';
-import 'package:discryptor/utils/crypto/crypto.dart';
-import 'package:discryptor/utils/string.dart';
 import 'package:equatable/equatable.dart';
 import 'package:collection/collection.dart';
 
@@ -150,22 +148,17 @@ class ChatListCubit extends Cubit<ChatListState> {
               status: ChatListStatus.success, chats: [...state.chats, chatVM]));
         }
       } else {
-        final cvm = chatVM.copyWith(
-            userVM: chatVM.userVM.copyWith(
-                user: chatVM.userVM.user.copyWith(
-                    isInitiatorOfRelationship: userId == updatedRel.initiatorId,
-                    relationshipAcceptanceDate: updatedRel.dateAccepted,
-                    relationshipInitiationDate: updatedRel.dateInitiated,
-                    encryptedSymmKey: userId == updatedRel.initiatorId
-                        ? updatedRel.acceptorSymmetricKey
-                        : updatedRel.initiatorSymmetricKey)));
-        final updatedChats = type.startsWith('cancel')
-            ? state.chats
-                .where((c) => true /*c.userVM.user.id != userId*/)
-                .toList()
-            : state.chats
-                .map((c) => c.userVM.user.id == userId ? cvm : c)
-                .toList();
+        final cvm = chatVM.updateWithRelationship(updatedRel);
+        // final updatedChats = type.startsWith('cancel')
+        //     ? state.chats
+        //         .where((c) => true /*c.userVM.user.id != userId*/)
+        //         .toList()
+        //     : state.chats
+        //         .map((c) => c.userVM.user.id == userId ? cvm : c)
+        //         .toList();
+        final updatedChats = state.chats
+            .map((c) => c.userVM.user.id == userId ? cvm : c)
+            .toList();
         final privkey = await prefRepo.privkey;
         cvm.decryptSymmetricKey(privkey!);
         emit(state.copyWith(

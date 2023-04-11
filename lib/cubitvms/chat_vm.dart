@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:discryptor/models/relationship.dart';
 import 'package:equatable/equatable.dart';
 
 import 'package:discryptor/cubitvms/message_vm.dart';
@@ -30,9 +31,24 @@ class ChatViewModel extends Equatable {
           status: status ?? this.status,
           message: message ?? this.message,
           error: error ?? this.error,
-          messages: messages);
+          messages: messages)
+        ..keyBase64 = keyBase64;
+
+  ChatViewModel updateWithRelationship(Relationship r) =>
+      ChatViewModel(userVM.copyWith(
+          user: userVM.user.copyWith(
+              isInitiatorOfRelationship: id == r.initiatorId,
+              relationshipAcceptanceDate: r.dateAccepted,
+              relationshipInitiationDate: r.dateInitiated,
+              encryptedSymmKey: id == r.initiatorId
+                  ? r.acceptorSymmetricKey
+                  : r.initiatorSymmetricKey)));
 
   void decryptSymmetricKey(String privKey) {
+    if (userVM.user.encryptedSymmKey == null) {
+      // can happen
+      return;
+    }
     keyBase64 = base64
         .encode(RSAHelper.rsaDecrypt(userVM.user.encryptedSymmKey!, privKey));
   }
@@ -50,6 +66,8 @@ class ChatViewModel extends Equatable {
   }
 
   late String? keyBase64;
+
+  int get id => userVM.user.id;
 
   final ChatStatus status;
   final UserViewModel userVM;
