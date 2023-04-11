@@ -1,3 +1,4 @@
+import 'package:discryptor/views/theme.dart';
 import 'package:flutter/material.dart';
 
 const discordStatusToColor = {
@@ -35,11 +36,11 @@ class StatusIndicator extends StatelessWidget {
       ),
       if (discordStatus == 0 || discordStatus == 3 || discordStatus == 4)
         Container(
-          width: size / 3,
-          height: size / 3,
+          width: size == 10 ? 5 : size / 3,
+          height: size == 10 ? 5 : size / 3,
           decoration: BoxDecoration(
-              border: showBorder ? Border.all(width: size <= 16 ? 4 : 7) : null,
-              color: discordStatusToColor[discordStatus],
+              border: Border.all(width: size <= 16 ? 4 : 7),
+              color: DiscryptorThemeData.backgroundColor,
               shape: BoxShape.circle),
         ),
     ]);

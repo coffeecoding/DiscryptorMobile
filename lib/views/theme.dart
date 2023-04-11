@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 
 class DiscryptorThemeData {
+  // #2b2d31 is chat list background
   static const backgroundColorDarkestest = Color(0xff17181a);
   static const backgroundColorDarkest = Color(0xff18191c);
   static const backgroundColorDarker = Color(0xff202225);
   static const backgroundColorDark = Color(0xff292b2f);
-  static const backgroundColor = Color(0xff2f3136);
+  // static const backgroundColor = Color(0xff2f3136);
+  static const backgroundColor = Color(0xff2b2d31);
   static const backgroundColorLight = Color(0xff33353b);
   static const backgroundColorLighter = Color(0xff36393f);
   static const backgroundColorLightest = Color(0xff414345);
